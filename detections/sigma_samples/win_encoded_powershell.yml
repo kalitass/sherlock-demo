@@ -1,0 +1,19 @@
+title: Encoded PowerShell Command Line
+id: 7a8b1c20-0003-4a00-9000-000000000003
+status: experimental
+description: >
+  Detects PowerShell launched with an encoded command (a downloader/stager pattern).
+  Representative SigmaHQ-style rule; exercises field modifiers and an OR value list.
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    CommandLine|contains:
+      - ' -enc '
+      - ' -EncodedCommand '
+  condition: selection
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001

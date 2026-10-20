@@ -1,0 +1,25 @@
+title: Multiple Failed Logons (Possible Password Guessing)
+id: 7a8b1c20-0001-4a00-9000-000000000001
+status: experimental
+description: >
+  Detects Windows failed logon events (4625) that may indicate brute-force or
+  password-spraying against an account. Representative SigmaHQ-style rule used to
+  demonstrate migration into Sherlock's canonical schema.
+references:
+  - https://sigmahq.io/
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4625
+  condition: selection
+fields:
+  - TargetUserName
+  - IpAddress
+falsepositives:
+  - User mistyping a password
+level: medium
+tags:
+  - attack.credential_access
+  - attack.t1110

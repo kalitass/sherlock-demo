@@ -1,0 +1,63 @@
+# Sherlock — ELK backbone for agentic threat hunting.
+# Security is disabled on purpose: this is a self-contained local lab, not a
+# production deployment. Documented as a dev-only choice in docs/sherlock-spec.md.
+name: sherlock
+
+services:
+  elasticsearch:
+    build:
+      context: ./docker/es
+    image: sherlock/elasticsearch:8.13.4-temurin21
+    container_name: sherlock-es
+    environment:
+      - node.name=sherlock-es
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.ml.enabled=false
+      # Local lab on a laptop-sized Docker disk: disable disk-based shard
+      # allocation so a full host disk never flips indices to read-only.
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - bootstrap.memory_lock=true
+      # Lean heap so ES + Kibana fit comfortably in a ~7.6 GiB Docker VM.
+      - "ES_JAVA_OPTS=-Xms768m -Xmx768m"
+      # NOTE: pinned to 8.13.4 (bundles JDK 21). ES 8.14+ ships JDK 22, which
+      # SIGILLs at JVM init under Docker Desktop on Apple Silicon (M-series).
+      - action.destructive_requires_name=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -qE '\"status\":\"(green|yellow)\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 40s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: sherlock-kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - XPACK_SECURITY_ENABLED=false
+      - "NODE_OPTIONS=--max-old-space-size=512"
+    ports:
+      - "5601:5601"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q 'available' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+volumes:
+  es_data:
+    driver: local

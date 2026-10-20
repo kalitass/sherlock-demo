@@ -1,0 +1,28 @@
+[project]
+name = "sherlock"
+version = "0.1.0"
+description = "Sherlock — agentic threat hunting on the ELK stack. Plain-English hypothesis in, evidence-linked verdict out."
+requires-python = ">=3.11"
+dependencies = [
+    "elasticsearch==8.13.2",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "mcp>=1.9.0,<2",
+    "anthropic>=0.40",
+    "openai>=1.50",
+    "httpx>=0.27",
+    "pydantic>=2.8",
+    "python-dateutil>=2.9",
+    "watchfiles>=0.24",
+    "rich>=13.7",
+    "sse-starlette>=2.1",
+    "python-dotenv>=1.0",
+    "litellm>=1.104.0",
+    "pyyaml>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.sherlock]
+# Placeholder so the table exists; real config lives in config/settings via env.

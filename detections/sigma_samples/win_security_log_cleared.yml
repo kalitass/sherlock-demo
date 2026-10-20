@@ -1,0 +1,17 @@
+title: Windows Security Event Log Cleared
+id: 7a8b1c20-0002-4a00-9000-000000000002
+status: experimental
+description: >
+  The Windows security audit log was cleared (event 1102) -- a common anti-forensic
+  action. Representative SigmaHQ-style rule.
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 1102
+  condition: selection
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1070.001

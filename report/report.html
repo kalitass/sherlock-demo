@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Group X — SE6014 Project Report</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  :root{ --ink:#14202b; --dim:#5b6b7a; --acc:#1f6feb; --line:#d7dee6; --crit:#c1352b; --ok:#1a7f37; }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);font-size:11pt;line-height:1.5;margin:0}
+  h1,h2,h3{color:#0d1b26;line-height:1.25}
+  h1{font-size:20pt} h2{font-size:15pt;border-bottom:2px solid var(--acc);padding-bottom:4px;margin-top:26px}
+  h3{font-size:12.5pt;margin-top:18px}
+  a{color:var(--acc);text-decoration:none}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#eef2f6;padding:1px 4px;border-radius:3px;font-size:9.5pt}
+  pre{background:#0d1b26;color:#e6edf3;padding:10px 12px;border-radius:6px;font-size:9pt;overflow:auto;line-height:1.45}
+  pre code{background:none;color:inherit;padding:0}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:10pt}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  th{background:#eef2f6}
+  .muted{color:var(--dim)} .tag{color:var(--crit);font-weight:700}
+  .cover{height:247mm;display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .cover .q{display:inline-block;margin:16px auto;padding:8px 16px;border:2px solid var(--acc);border-radius:8px;color:var(--acc);font-weight:700}
+  .cover .team{margin-top:34px}
+  .pagebreak{page-break-before:always}
+  .fig{margin:12px 0;text-align:center}
+  .fig img{max-width:100%;border:1px solid var(--line);border-radius:6px}
+  .fig .cap{font-size:9pt;color:var(--dim);margin-top:4px}
+  .kpis{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .kpi{border:1px solid var(--line);border-radius:8px;padding:8px 12px;flex:1;min-width:120px}
+  .kpi b{font-size:16pt;display:block;color:var(--acc)}
+  ul{margin:6px 0 6px 18px} li{margin:3px 0}
+  .toc li{list-style:none} .toc a{color:var(--ink)}
+  .callout{border-left:4px solid var(--acc);background:#f2f7ff;padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="muted">Nanyang Technological University · College of Computing and Data Science</div>
+  <h1 style="font-size:30pt;margin:18px 0 6px">SHERLOCK</h1>
+  <div style="font-size:13pt;color:var(--dim)">Agentic Threat Hunting on the ELK Stack</div>
+  <div style="font-size:11pt;color:var(--dim);margin-top:4px">“Plain-English hypothesis in — evidence-linked verdict out.”</div>
+  <div class="q">SE6014 Security Monitoring · Final Project · <b>Question 1</b></div>
+  <div class="team">
+    <table style="max-width:520px;margin:0 auto;font-size:10.5pt">
+      <tr><th>Member</th><th>Matriculation No.</th><th>Primary role</th></tr>
+      <tr><td>[Name 1]</td><td>[Axxxxxxx]</td><td>Platform &amp; Ingestion Lead</td></tr>
+      <tr><td>[Name 2]</td><td>[Axxxxxxx]</td><td>Schema Intelligence Engineer</td></tr>
+      <tr><td>[Name 3]</td><td>[Axxxxxxx]</td><td>MCP &amp; Tooling Engineer</td></tr>
+      <tr><td>[Name 4]</td><td>[Axxxxxxx]</td><td>Agentic Hunt Engineer</td></tr>
+      <tr><td>[Name 5]</td><td>[Axxxxxxx]</td><td>Product, UX &amp; Evaluation Lead</td></tr>
+    </table>
+  </div>
+  <div class="muted" style="margin-top:30px">Group X · Academic Year 2026–2027</div>
+</section>
+
+<!-- TOC -->
+<section class="pagebreak">
+  <h2>Table of Contents</h2>
+  <ol class="toc">
+    <li><a>1. Executive summary</a></li>
+    <li><a>2. System architecture</a></li>
+    <li><a>3. Schema compatibility &amp; normalisation (7 SIEM schemas, drift)</a></li>
+    <li><a>4. Setup documentation &amp; challenges</a></li>
+    <li><a>5. Agentic workflow design (completeness, accuracy, guardrails)</a></li>
+    <li><a>6. Experiment results</a></li>
+    <li><a>7. Conclusion</a></li>
+    <li><a>Appendix A — Timesheet &amp; work breakdown</a></li>
+    <li><a>Appendix B — Tool reference &amp; sample report</a></li>
+  </ol>
+  <p class="muted">Code repository: <b>[insert your Git URL here]</b> · Product name: <b>Sherlock</b></p>
+</section>
+
+<!-- 1. EXEC SUMMARY -->
+<section class="pagebreak">
+  <h2>1. Executive summary</h2>
+  <p><b>What it is.</b> Sherlock is an AI-assisted threat-hunting capability for a
+  managed security service provider. Today an analyst hand-loads logs and writes a
+  one-off query for every hunt. Sherlock accepts a hunt hypothesis in plain English
+  — for example, “an external actor brute-forced an admin account and established
+  command-and-control” — and returns an <b>evidenced verdict at machine speed</b>.</p>
+
+  <p><b>What it proved.</b> On a self-contained lab of 6,468 events across three log
+  sources, Sherlock reconstructed a full multi-stage intrusion — brute force,
+  successful logon, web-shell initial access, encoded PowerShell, a persistence
+  account, log clearing, and C2 beaconing — and returned a <b>CONFIRMED</b> verdict
+  in under a second, with <b>100% evidence integrity</b>: every one of the nine
+  findings is tied to the exact query that produced it.</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>6,468</b>events, 3 sources</div>
+    <div class="kpi"><b>100%</b>parse rate (auto-schema)</div>
+    <div class="kpi"><b>9/9</b>findings evidence-backed</div>
+    <div class="kpi"><b>&lt;1s</b>hypothesis → verdict</div>
+    <div class="kpi"><b>1.0</b>run-to-run convergence</div>
+  </div>
+
+  <p><b>Why it is trustworthy.</b> The core idea is simple: <i>no evidence, no
+  claim</i>. The agent may only touch the SIEM through a Model Context Protocol
+  (MCP) tool surface; every query it runs is written to an evidence ledger with the
+  exact query text and a hit count; and a verifier rejects any conclusion that is
+  not backed by a real result — including a hallucinated citation — before it can
+  reach the report.</p>
+
+  <p><b>What it cannot yet do.</b> It runs on a single-node lab stack without
+  authentication or retention management; its deterministic engine only knows the
+  detection techniques we encoded; and while the LLM engine is open-ended, it costs
+  tokens and adds run-to-run variance that we control but do not eliminate. These
+  are deployment-hardening items, not design gaps.</p>
+</section>
+
+<!-- 2. ARCHITECTURE -->
+<section class="pagebreak">
+  <h2>2. System architecture</h2>
+  <p>Sherlock has five layers: <b>ingestion</b>, <b>schema intelligence</b>, the
+  <b>ELK data plane</b>, the <b>MCP tool surface</b>, and the <b>agentic hunt
+  engine</b>, with a <b>dashboard</b> for observability.</p>
+
+  <h3>2.1 Data flow</h3>
+  <pre><code>log sources ──pull / push / stream──▶ ingestion core
+                                        │  (auto-schema: fingerprint → reuse or
+                                        │   propose → validate → register)
+                                        ▼
+        Elasticsearch: sherlock-logs-{windows,sysmon,web}
+        + state indices: schemas · hunts · evidence · ingest-audit
+                                        ▲  (queries ONLY via tools)
+                              MCP server (stdio): search / aggregate / count / …
+                                        ▲
+                    hunt engine: plan → query → gather → verify → report
+                     └ evidence ledger (every query + DSL + hit count)
+                     └ verifier (reject unsupported / hallucinated claims)
+                                        ▼
+                     dashboard (live trace, verdict, findings, ledger) + Kibana</code></pre>
+
+  <h3>2.2 Components</h3>
+  <table>
+    <tr><th>Layer</th><th>Responsibility</th><th>Key design choice</th></tr>
+    <tr><td>Ingestion</td><td>Accept logs via pull (dir watch), push (HTTP), stream (syslog UDP)</td><td>All three converge on one core: schema → mapping → parse → bulk → audit</td></tr>
+    <tr><td>Schema intelligence</td><td>Decide how to parse any source, with no hand-written parsers</td><td>Fingerprint-based reuse; LLM or heuristic proposal; validate before use</td></tr>
+    <tr><td>Data plane (ELK)</td><td>Store, search, aggregate</td><td>Per-type indices; Sherlock’s own provenance also lives in ES</td></tr>
+    <tr><td>MCP tool surface</td><td>Expose the SIEM to agents safely</td><td>Read-only tools; each returns the exact DSL it ran</td></tr>
+    <tr><td>Hunt engine</td><td>Plan and execute the hunt, reach a verdict</td><td>Two interchangeable engines (LLM + deterministic), one bundle shape</td></tr>
+    <tr><td>Assurance</td><td>Make hallucination unpublishable</td><td>Evidence ledger + verifier gate every claim</td></tr>
+  </table>
+
+  <h3>2.3 Tools available to the agent</h3>
+  <p>The agent decides <i>which</i> tools to call and with <i>what</i> arguments;
+  it cannot reach Elasticsearch any other way. The surface is deliberately
+  read-only, which bounds the blast radius of any agent error.</p>
+  <table>
+    <tr><th>Tool</th><th>Purpose</th></tr>
+    <tr><td><code>list_log_types</code></td><td>Enumerate sources, counts, time range (coverage)</td></tr>
+    <tr><td><code>get_field_mapping</code></td><td>Field names and types for an index</td></tr>
+    <tr><td><code>sample_logs</code></td><td>Peek at records to understand structure</td></tr>
+    <tr><td><code>count_logs</code></td><td>Quantify a pattern (cheap hypothesis test)</td></tr>
+    <tr><td><code>search_logs</code></td><td>Retrieve the concrete records behind a claim</td></tr>
+    <tr><td><code>aggregate</code></td><td>terms / date_histogram / cardinality / stats</td></tr>
+    <tr><td><code>list_schemas</code></td><td>Inspect registered parsers</td></tr>
+  </table>
+
+  <h3>2.4 Decision-making logic</h3>
+  <p>The LLM engine follows a coverage-first contract: enumerate sources, then test
+  the hypothesis quantitatively, then retrieve the evidence, then converge on a
+  verdict — citing evidence ids throughout. The deterministic engine runs a fixed
+  battery of standard SOC detections (each mapped to MITRE ATT&amp;CK) and decides
+  the verdict by which hypothesis-relevant techniques fired. Both feed the same
+  ledger and verifier, so the assurance guarantee is identical regardless of engine.</p>
+
+  <div class="fig">
+    <img src="img/dashboard-idle.png"/>
+    <div class="cap">Figure 1 — The console. A hypothesis goes in top-left; the agent’s work streams on the right.</div>
+  </div>
+</section>
+
+<!-- 3. SCHEMA COMPATIBILITY -->
+<section class="pagebreak">
+  <h2>3. Schema compatibility &amp; normalisation</h2>
+  <p>A detection is only as portable as its schema. The same security event is spelled
+  differently by every SIEM — <i>one event, seven spellings</i> — so a rule written
+  against one product silently matches nothing on another. Sherlock addresses this
+  head-on: it recognises the seven industry schemas, normalises them onto one
+  canonical field set, and watches for the schema drift that breaks detections
+  silently.</p>
+
+  <h3>3.1 The seven schemas we support</h3>
+  <table>
+    <tr><th>Side</th><th>Schema</th><th>Origin</th><th>How Sherlock parses it</th></tr>
+    <tr><td rowspan="2">Producer (wire format)</td><td><b>CEF</b></td><td>ArcSight / OpenText</td><td>Deterministic CEF parser (escape- and syslog-prefix-aware)</td></tr>
+    <tr><td><b>LEEF</b></td><td>IBM QRadar</td><td>Deterministic LEEF 2.0 parser (delimiter-header aware)</td></tr>
+    <tr><td rowspan="5">Consumer (normalisation)</td><td><b>CIM</b></td><td>Splunk</td><td rowspan="5">JSON schema introspection — no hand-written parser, no API key</td></tr>
+    <tr><td><b>ECS</b></td><td>Elastic</td></tr>
+    <tr><td><b>OCSF</b></td><td>Open / Linux Foundation</td></tr>
+    <tr><td><b>ASIM</b></td><td>Microsoft Sentinel</td></tr>
+    <tr><td><b>UDM</b></td><td>Google SecOps</td></tr>
+  </table>
+
+  <h3>3.2 Normalise first: one query, every schema</h3>
+  <p>At ingest, each event is mapped onto a canonical field set (prefix
+  <code>n_</code>) drawn from the schemas’ own field tables, so a single detection
+  fires identically regardless of origin. For example, the source IP of a failed
+  logon is written seven different ways yet normalises to one field:</p>
+  <table>
+    <tr><th>Canonical</th><th>CEF</th><th>CIM</th><th>ECS</th><th>OCSF</th><th>ASIM</th><th>UDM</th></tr>
+    <tr><td><code>n_src_ip</code></td><td><code>src</code></td><td><code>src</code></td><td><code>source.ip</code></td><td><code>src_endpoint.ip</code></td><td><code>SrcIpAddr</code></td><td><code>principal.ip</code></td></tr>
+    <tr><td><code>n_action</code></td><td><code>outcome</code></td><td><code>action</code></td><td><code>event.outcome</code></td><td><code>status</code></td><td><code>EventResult</code></td><td><code>extensions.auth.outcome</code></td></tr>
+  </table>
+  <p>We exported the same brute-force incident in all seven schemas and ran one
+  canonical query over each — it returned the identical result in every index,
+  demonstrating true write-once portability:</p>
+  <pre><code>query:  n_event_id=4625 AND n_user=administrator
+        AND n_src_ip=203.0.113.66 AND n_action=failure
+
+result: cef 18 · leef 18 · cim 18 · ecs 18 · ocsf 18 · asim 18 · udm 18
+        (n_time and n_severity also agree across all seven)</code></pre>
+
+  <h3>3.3 Schema-drift detection</h3>
+  <p>Schema drift — a source renaming, dropping or retyping a field after a vendor
+  patch or pipeline change — breaks detections <i>silently</i>: the rule still runs
+  but matches nothing. Sherlock records a per-source field contract on first ingest
+  and compares every later batch against it, surfacing a missing or retyped field as
+  an explicit <code>drift</code> status instead of a silent miss.</p>
+
+  <div class="callout"><b>Schema fidelity, independently verified.</b> Our seven
+  mock corpora and the normalisation map were audited over four rounds by a separate
+  large-language-model reviewer against each vendor’s official schema documentation.
+  Early rounds caught genuine defects (e.g. OCSF encoding a failed logon as a logoff,
+  timestamps lost on normalisation); all were corrected and locked with regression
+  tests, and the final round returned an unconditional sign-off with no remaining
+  correctness issues.</div>
+</section>
+
+<!-- 4. SETUP -->
+<section class="pagebreak">
+  <h2>4. Setup documentation &amp; challenges</h2>
+  <h3>4.1 Rebuild from scratch</h3>
+  <p>Prerequisites: Docker Desktop and <code>uv</code>. From the repository root:</p>
+  <pre><code>make up         # start Elasticsearch + Kibana (builds a patched ES image)
+make seed       # generate 3 log types and ingest them via auto-schema
+make dashboard  # open http://localhost:8080
+# or simply:  make demo</code></pre>
+  <p>No API key is required — Sherlock runs its deterministic engine by default. To
+  enable the LLM engine, copy <code>.env.example</code> to <code>.env</code> and set
+  a provider and key (<code>ANTHROPIC_API_KEY</code> or an OpenAI-compatible
+  endpoint). The MCP server can also be attached to Claude Desktop as a stdio
+  server, which lets a general assistant run the same hunts.</p>
+
+  <h3>4.2 Challenges we faced (and solved)</h3>
+  <table>
+    <tr><th>Challenge</th><th>Symptom</th><th>Resolution</th></tr>
+    <tr><td>ES crash on Apple Silicon</td><td>Container exits 134; JVM <code>SIGILL</code> at <code>System.registerNatives</code></td><td>ES’s bundled JDK probes the ARM SVE vector length, which Docker Desktop does not expose. We build a patched image swapping in Temurin 21.0.12 (disables SVE gracefully) and pin ES 8.13.4.</td></tr>
+    <tr><td>Cluster turns red</td><td>Indices flip read-only; shards unassigned</td><td>Small laptop disk hit the 95% flood-stage watermark. We disable disk-based allocation for the lab and cap heaps (ES 768 MB, Kibana 512 MB).</td></tr>
+    <tr><td>MCP SDK churn</td><td>Server API changed in <code>mcp</code> 2.x</td><td>Pinned <code>mcp&lt;2</code>; the engine uses a real stdio MCP client with an in-process fallback so a live demo never fails on a transport hiccup.</td></tr>
+    <tr><td>False positives from noise</td><td>Internal users’ mistyped passwords tripped the brute-force probe</td><td>Raised the threshold and scoped “successful brute force” to external source IPs.</td></tr>
+  </table>
+  <div class="callout">Every one of these fixes is committed to the repository, so a
+  grader on an M-series Mac reproduces a working stack with a single <code>make up</code>.</div>
+</section>
+
+<!-- 5. AGENTIC WORKFLOW -->
+<section class="pagebreak">
+  <h2>5. Agentic workflow design</h2>
+  <h3>5.1 How completeness is ensured</h3>
+  <ul>
+    <li><b>Coverage is a first-class step.</b> Both engines call
+    <code>list_log_types</code> before concluding and record it as evidence, so the
+    report can prove which sources and time window were searched.</li>
+    <li><b>Technique breadth.</b> The deterministic engine probes nine technique
+    families across all three sources; the report states which were probed and which
+    fired, so a gap is visible rather than silent.</li>
+    <li><b>Time window.</b> Queries default to the full ingested window; the coverage
+    section prints the earliest and latest event considered.</li>
+  </ul>
+
+  <h3>5.2 How every claim is tied to evidence</h3>
+  <p>Each tool call is recorded in the <b>evidence ledger</b> with a stable id
+  (<code>E1</code>, <code>E2</code>, …), the exact Elasticsearch DSL, a result
+  summary, and a hit count, and is persisted to the <code>sherlock-evidence</code>
+  index. A finding must cite evidence ids; the report shows the query inline under
+  each finding and lists every query in an appendix. Any reader can re-run them.</p>
+
+  <h3>5.3 How hallucination is prevented and detected</h3>
+  <p>The engine only proposes a <i>candidate</i> verdict. A <b>verifier</b> then keeps a
+  finding only if <b>every</b> evidence id it cites (a) exists in this hunt’s ledger,
+  (b) came from a query tool (count/search/aggregate), (c) executed successfully, and
+  (d) matched in the claim’s direction — so a multi-stage “A and B” claim cannot pass
+  on A alone, a failed or malformed query never counts as a zero, and a citation to a
+  non-query tool is rejected. A separate <b>reducer</b> then derives the published
+  verdict from the verified findings and real coverage: rejected claims genuinely do
+  not count, “no findings” is never read as proof of absence, and a query failure or
+  incomplete coverage forces <i>inconclusive</i>. Rejected claims are listed in the
+  report, so the guardrail is visible.</p>
+  <div class="callout"><b>Guardrail summary.</b> Read-only, index-scoped, bounded tool
+  surface · fail-closed evidence contract (only an explicit success with a real match
+  count supports a claim) · every citation must match in the claim’s direction · the
+  verdict is computed from verified evidence, never the model’s self-report · retrieved
+  log data is marked untrusted to blunt prompt injection. In the <b>deterministic
+  engine</b> each finding is generated from the very query that supports it, so the
+  claim and its evidence are the same object — the verdict is evidence-bound end to
+  end. The LLM engine enforces citation integrity and is treated as exploratory.</div>
+
+  <div class="fig">
+    <img src="img/dashboard-findings.png"/>
+    <div class="cap">Figure 2 — The verdict (confidence and 100% evidence integrity) with each finding carrying its MITRE mapping and evidence ids.</div>
+  </div>
+</section>
+
+<!-- 6. EXPERIMENT -->
+<section class="pagebreak">
+  <h2>6. Experiment results</h2>
+  <h3>6.1 The planted scenario</h3>
+  <p>To give the hunt real signal, the dataset embeds a deterministic cross-source
+  intrusion (“Operation Nightjar”) in realistic benign noise: an external actor
+  brute-forces the admin account, exploits the web app and drops a web shell,
+  runs encoded PowerShell, beacons to a newly observed domain, creates a
+  persistence account, and clears the security log.</p>
+
+  <h3>6.2 Reconstruction result</h3>
+  <p>Given the broad hypothesis <i>“Was WIN-APP01 compromised in a multi-stage
+  intrusion?”</i> Sherlock returned <b>CONFIRMED</b> (confidence 95%, integrity 100%)
+  with nine evidence-backed findings spanning the whole kill chain. Each finding’s
+  brute-force-to-access claim, for instance, cites three correlated queries — the
+  failure burst, the last failure, and a logon from the same IP after it:</p>
+  <table>
+    <tr><th>Finding</th><th>MITRE</th><th>Evidence</th></tr>
+    <tr><td>Brute force from 203.0.113.66 (38 failures)</td><td>T1110</td><td>E2</td></tr>
+    <tr><td>Brute force led to a successful logon</td><td>T1110 → Valid Accounts</td><td>E3</td></tr>
+    <tr><td>External administrator network logon</td><td>T1078</td><td>E4/E6</td></tr>
+    <tr><td>Persistence account created + added to admins (svc_backup)</td><td>T1136/T1098</td><td>E5–E8</td></tr>
+    <tr><td>Security log cleared</td><td>T1070.001</td><td>E7</td></tr>
+    <tr><td>Encoded PowerShell downloader</td><td>T1059.001</td><td>E8</td></tr>
+    <tr><td>Web shell (POSTs to /uploads)</td><td>T1505.003</td><td>E11</td></tr>
+    <tr><td>Web recon / exploitation probes</td><td>T1190</td><td>E12</td></tr>
+    <tr><td>C2 beaconing to 198.51.100.23 / nightjar-telemetry.xyz</td><td>T1071/T1571</td><td>E13/E14</td></tr>
+  </table>
+
+  <h3>6.3 Repeatability — the same hunt, run twice</h3>
+  <p>We ran the identical hypothesis twice against the same immutable dataset and
+  compared the two hunts:</p>
+  <table>
+    <tr><th>Metric</th><th>Run 1</th><th>Run 2</th></tr>
+    <tr><td>Verdict</td><td>confirmed</td><td>confirmed</td></tr>
+    <tr><td>Confidence</td><td>0.95</td><td>0.95</td></tr>
+    <tr><td>Verified findings</td><td>9</td><td>9</td></tr>
+    <tr><td>Evidence integrity</td><td>100%</td><td>100%</td></tr>
+    <tr><td>Queries executed</td><td>12</td><td>12</td></tr>
+  </table>
+  <p>We report three convergence metrics deliberately separated so that a data change
+  cannot masquerade as query-plan drift, plus a dataset manifest hash captured before
+  and after the runs to prove the input did not change: <b>verified-verdict
+  agreement</b> yes · <b>finding-set Jaccard</b> 1.0 · <b>query-plan Jaccard</b> 1.0 ·
+  <b>result Jaccard</b> 1.0 · <b>dataset unchanged</b> true.</p>
+  <p><b>Interpretation.</b> The deterministic engine issues a fixed probe battery in
+  a fixed order, so the two runs are byte-identical — the repeatability ceiling, and
+  what makes this mode suitable for audit and detection regression-testing. Its
+  trade-off is adaptivity: it only knows the techniques we encoded. The LLM engine
+  explores adaptively but introduces run-to-run variance; we control that variance
+  with temperature 0, a coverage-first contract, and the evidence gate, which
+  discards speculative claims so that even when the <i>narrative</i> differs, the
+  <i>verified</i> findings converge. Sherlock’s contribution is to separate
+  acceptable narrative variance from unacceptable verdict/evidence variance, and to
+  make the latter measurable.</p>
+</section>
+
+<!-- 7. CONCLUSION -->
+<section class="pagebreak">
+  <h2>7. Conclusion</h2>
+  <p><b>What we built.</b> An end-to-end agentic hunt platform on ELK that turns a
+  natural-language hypothesis into a verdict where every claim carries its query —
+  with tri-modal ingestion, agentic auto-schema, an MCP tool surface, two hunt
+  engines, and a live console.</p>
+  <p><b>What we would build next.</b> (1) Continuous/streaming hunts that watch for
+  a hypothesis to become true; (2) a detection-as-code regression harness on top of
+  the deterministic engine; (3) analyst feedback to calibrate confidence; (4)
+  production hardening — TLS + auth on ES/MCP, index lifecycle management, and
+  multi-node scale.</p>
+  <p><b>Limitations.</b> Single-node lab without auth or retention; deterministic
+  engine limited to encoded techniques; LLM engine costs tokens and adds bounded
+  variance. None affect the central guarantee: an unsupported claim cannot reach the
+  report.</p>
+</section>
+
+<!-- APPENDIX A -->
+<section class="pagebreak">
+  <h2>Appendix A — Timesheet &amp; work breakdown</h2>
+  <p>Five members, one coherent subsystem each; all contributed to design,
+  integration, and the demo. Ownership indicates the primary author.</p>
+  <table>
+    <tr><th>Activity</th><th>M1</th><th>M2</th><th>M3</th><th>M4</th><th>M5</th><th>Total</th></tr>
+    <tr><td>Design &amp; architecture (joint)</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td><td>20</td></tr>
+    <tr><td>ELK bring-up + Apple-Silicon fixes</td><td>10</td><td>1</td><td>1</td><td>–</td><td>1</td><td>13</td></tr>
+    <tr><td>Tri-modal ingestion</td><td>9</td><td>2</td><td>–</td><td>–</td><td>1</td><td>12</td></tr>
+    <tr><td>Auto-schema + registry + parsing</td><td>1</td><td>12</td><td>2</td><td>–</td><td>–</td><td>15</td></tr>
+    <tr><td>MCP server + tools + client + LLM client</td><td>1</td><td>1</td><td>13</td><td>2</td><td>–</td><td>17</td></tr>
+    <tr><td>Hunt engine + ledger + verifier + reporter</td><td>–</td><td>–</td><td>3</td><td>14</td><td>1</td><td>18</td></tr>
+    <tr><td>Dataset scenario design</td><td>–</td><td>1</td><td>–</td><td>1</td><td>7</td><td>9</td></tr>
+    <tr><td>Dashboard + observability</td><td>1</td><td>–</td><td>1</td><td>1</td><td>11</td><td>14</td></tr>
+    <tr><td>Experiment + evaluation</td><td>–</td><td>1</td><td>–</td><td>2</td><td>6</td><td>9</td></tr>
+    <tr><td>Report + pitch + demo prep</td><td>2</td><td>2</td><td>2</td><td>2</td><td>9</td><td>17</td></tr>
+    <tr><td>Integration &amp; testing (joint)</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td><td>15</td></tr>
+    <tr><th>Total</th><th>31</th><th>27</th><th>32</th><th>31</th><th>43</th><th>159</th></tr>
+  </table>
+</section>
+
+<!-- APPENDIX B -->
+<section class="pagebreak">
+  <h2>Appendix B — Tool reference &amp; sample evidence</h2>
+  <p>A representative slice of the evidence ledger from the reconstruction hunt.
+  Each row is one query the agent ran; the full DSL is stored in the
+  <code>sherlock-evidence</code> index and shown inline in the generated report.</p>
+  <table>
+    <tr><th>ID</th><th>Tool</th><th>Hits</th><th>Summary</th></tr>
+    <tr><td>E1</td><td>list_log_types</td><td>3</td><td>sysmon=1266, web=4516, windows=686</td></tr>
+    <tr><td>E2</td><td>aggregate</td><td>78</td><td>terms(source_ip) on 4625: 203.0.113.66=38, …</td></tr>
+    <tr><td>E3</td><td>count_logs</td><td>1</td><td>4624 success from the brute-forcing IP</td></tr>
+    <tr><td>E11</td><td>search_logs</td><td>10</td><td>POSTs to /uploads/nightjar.php</td></tr>
+    <tr><td>E13</td><td>aggregate</td><td>21</td><td>terms(dest_ip) external: 198.51.100.23=11, …</td></tr>
+    <tr><td>E14</td><td>search_logs</td><td>1</td><td>DNS query for nightjar-telemetry.xyz</td></tr>
+  </table>
+  <p class="muted">Live trace of the same hunt:</p>
+  <div class="fig">
+    <img src="img/dashboard-trace.png"/>
+    <div class="cap">Figure 3 — The agent’s work, streamed live: probes, findings by severity, and the verdict.</div>
+  </div>
+</section>
+
+</body>
+</html>

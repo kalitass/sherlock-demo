@@ -1,0 +1,156 @@
+{
+  "generated": "2026-10-20T06:51:16.346017+00:00",
+  "model": "qwen2.5:3b",
+  "tag": "qwen3b",
+  "n_cases": 11,
+  "rows": [
+    {
+      "cid": "adduser.create",
+      "scope": "mordor_adduser",
+      "truth": "confirmed",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "schtask.persist",
+      "scope": "mordor_schtask",
+      "truth": "confirmed",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "vbs.exec",
+      "scope": "mordor_vbs_exec",
+      "truth": "confirmed",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "lsass.dump",
+      "scope": "mordor_lsass_dump",
+      "truth": "confirmed",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "logtamper.disable",
+      "scope": "mordor_logtamper",
+      "truth": "confirmed",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "adduser.noweb",
+      "scope": "mordor_adduser",
+      "truth": "refuted",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "schtask.nobrute",
+      "scope": "mordor_schtask",
+      "truth": "refuted",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "vbs.noaccount",
+      "scope": "mordor_vbs_exec",
+      "truth": "refuted",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "lsass.noschtask",
+      "scope": "mordor_lsass_dump",
+      "truth": "refuted",
+      "raw_verdict": "inconclusive",
+      "harness_verdict": "inconclusive",
+      "claims": 0,
+      "verified": 0,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "benign.nobrute",
+      "scope": "scn_benign",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "inconclusive",
+      "claims": 1,
+      "verified": 0,
+      "rejected": 1,
+      "integrity": 0.0
+    },
+    {
+      "cid": "benign.noaccount",
+      "scope": "scn_benign",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "inconclusive",
+      "claims": 1,
+      "verified": 0,
+      "rejected": 1,
+      "integrity": 0.0
+    }
+  ],
+  "raw": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 5,
+    "tn": 6,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "fp_rate": 0.0,
+    "accuracy": 0.5454545454545454,
+    "exact_accuracy": 0.18181818181818182
+  },
+  "harness": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 5,
+    "tn": 6,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "fp_rate": 0.0,
+    "accuracy": 0.5454545454545454,
+    "exact_accuracy": 0.0
+  },
+  "claims_asserted": 2,
+  "claims_rejected": 2,
+  "reject_rate": 1.0
+}

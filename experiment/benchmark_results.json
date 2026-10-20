@@ -1,0 +1,154 @@
+{
+  "generated": "2026-10-20T06:05:12.127962+00:00",
+  "n_cases": 11,
+  "rows": [
+    {
+      "cid": "adduser.create",
+      "scope": "mordor_adduser",
+      "truth": "confirmed",
+      "raw_verdict": "confirmed",
+      "harness_verdict": "confirmed",
+      "claims": 6,
+      "verified": 6,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "schtask.persist",
+      "scope": "mordor_schtask",
+      "truth": "confirmed",
+      "raw_verdict": "confirmed",
+      "harness_verdict": "confirmed",
+      "claims": 5,
+      "verified": 5,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "vbs.exec",
+      "scope": "mordor_vbs_exec",
+      "truth": "confirmed",
+      "raw_verdict": "confirmed",
+      "harness_verdict": "confirmed",
+      "claims": 6,
+      "verified": 6,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "lsass.dump",
+      "scope": "mordor_lsass_dump",
+      "truth": "confirmed",
+      "raw_verdict": "confirmed",
+      "harness_verdict": "confirmed",
+      "claims": 5,
+      "verified": 5,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "logtamper.disable",
+      "scope": "mordor_logtamper",
+      "truth": "confirmed",
+      "raw_verdict": "confirmed",
+      "harness_verdict": "confirmed",
+      "claims": 5,
+      "verified": 5,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "adduser.noweb",
+      "scope": "mordor_adduser",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "refuted",
+      "claims": 7,
+      "verified": 7,
+      "rejected": 0,
+      "integrity": 1.0
+    },
+    {
+      "cid": "schtask.nobrute",
+      "scope": "mordor_schtask",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "refuted",
+      "claims": 8,
+      "verified": 7,
+      "rejected": 1,
+      "integrity": 0.875
+    },
+    {
+      "cid": "vbs.noaccount",
+      "scope": "mordor_vbs_exec",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "refuted",
+      "claims": 7,
+      "verified": 6,
+      "rejected": 1,
+      "integrity": 0.857
+    },
+    {
+      "cid": "lsass.noschtask",
+      "scope": "mordor_lsass_dump",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "refuted",
+      "claims": 8,
+      "verified": 7,
+      "rejected": 1,
+      "integrity": 0.875
+    },
+    {
+      "cid": "benign.nobrute",
+      "scope": "scn_benign",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "refuted",
+      "claims": 6,
+      "verified": 5,
+      "rejected": 1,
+      "integrity": 0.833
+    },
+    {
+      "cid": "benign.noaccount",
+      "scope": "scn_benign",
+      "truth": "refuted",
+      "raw_verdict": "refuted",
+      "harness_verdict": "refuted",
+      "claims": 7,
+      "verified": 5,
+      "rejected": 2,
+      "integrity": 0.714
+    }
+  ],
+  "raw": {
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "tn": 6,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "fp_rate": 0.0,
+    "accuracy": 1.0,
+    "exact_accuracy": 1.0
+  },
+  "harness": {
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "tn": 6,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "fp_rate": 0.0,
+    "accuracy": 1.0,
+    "exact_accuracy": 1.0
+  },
+  "claims_asserted": 70,
+  "claims_rejected": 6,
+  "reject_rate": 0.08571428571428572
+}

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+datasets/generated/
+drop/
+reports/*.md
+!reports/.gitkeep
+.DS_Store
+datasets/mordor_cache/

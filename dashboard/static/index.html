@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sherlock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Sherlock — agentic threat hunting · design tokens
+   ============================================================ */
+/* Every component reads tokens only. A theme is a pure redefinition of the
+   tokens below under :root[data-theme="<name>"] — nothing else changes.
+   Themes: graphite (default, dark) · light · slate (blue-grey dark) · indigo (violet dark).
+   Convention kept in every theme: --acc = navigation / hunt accent,
+   --es = teal "open in Elasticsearch" affordance, status colours always paired with a label. */
+:root{
+  color-scheme:dark;
+  --bg:#0a0d12; --s1:#10141b; --s2:#151a23; --s3:#1b2130; --s4:#222a3a;
+  --line:#222a37; --line2:#1a212c; --line-hi:#2f3a4c;
+  --ink:#e8edf4; --ink2:#b3bcc9; --mute:#737f90; --ghost:#4a5466;
+  --acc:#5aa2ff; --acc-deep:#2b6fd6; --acc-soft:rgba(90,162,255,.12); --acc-line:rgba(90,162,255,.35); --acc-glow:rgba(90,162,255,.6); --on-acc:#07101c;
+  --es:#2fd0b8; --es-soft:rgba(47,208,184,.12); --es-line:rgba(47,208,184,.35); --es-hover:rgba(47,208,184,.22); --es-glow:rgba(47,208,184,.8); --on-es:#06201b;
+  --crit:#ff5c6a; --high:#ff9a3c; --med:#f2c94c; --low:#8b96a6; --ok:#3fd38f; --info:#a78bfa;
+  --crit-soft:rgba(255,92,106,.14); --high-soft:rgba(255,154,60,.14); --med-soft:rgba(242,201,76,.14); --low-soft:rgba(139,150,166,.16); --ok-soft:rgba(63,211,143,.14);
+  --ok-ring:rgba(63,211,143,.15); --ok-ring-wide:rgba(63,211,143,.05); --crit-ring:rgba(255,92,106,.15);
+  --sel:rgba(90,162,255,.3); --scroll:#242c3a; --row-hover:rgba(255,255,255,.015);
+  --topbar:rgba(10,13,18,.82); --scrim:rgba(5,8,12,.7); --modal-shadow:0 30px 80px -20px rgba(0,0,0,.8);
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:10px; --r-sm:7px; --sidebar:236px;
+  --shadow:0 1px 0 rgba(255,255,255,.02) inset, 0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+/* ---- Light: paper surfaces, dark ink, soft borders; status colours darkened to ≥4.5:1 on white ---- */
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f3f5f8; --s1:#ffffff; --s2:#f6f8fb; --s3:#eceff4; --s4:#e1e6ee;
+  --line:#dfe4ec; --line2:#e9edf3; --line-hi:#c5cedb;
+  --ink:#141a24; --ink2:#3b4554; --mute:#5f6a79; --ghost:#98a3b3;
+  --acc:#2563eb; --acc-deep:#1d4ed8; --acc-soft:rgba(37,99,235,.09); --acc-line:rgba(37,99,235,.35); --acc-glow:rgba(37,99,235,.45); --on-acc:#ffffff;
+  --es:#0b7f72; --es-soft:rgba(11,127,114,.10); --es-line:rgba(11,127,114,.38); --es-hover:rgba(11,127,114,.2); --es-glow:rgba(11,127,114,.5); --on-es:#ffffff;
+  --crit:#bb2034; --high:#a44a06; --med:#7f5900; --low:#55627a; --ok:#127238; --info:#6b4fd8;
+  --crit-soft:rgba(187,32,52,.10); --high-soft:rgba(164,74,6,.10); --med-soft:rgba(127,89,0,.11); --low-soft:rgba(85,98,122,.11); --ok-soft:rgba(18,114,56,.10);
+  --ok-ring:rgba(18,114,56,.18); --ok-ring-wide:rgba(18,114,56,.06); --crit-ring:rgba(187,32,52,.16);
+  --sel:rgba(37,99,235,.2); --scroll:#c9d1dc; --row-hover:rgba(16,24,40,.028);
+  --topbar:rgba(255,255,255,.84); --scrim:rgba(20,26,36,.45); --modal-shadow:0 30px 80px -20px rgba(16,24,40,.35);
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px -16px rgba(16,24,40,.16);
+}
+
+/* ---- Slate: deep navy / blue-grey, softer than graphite ---- */
+:root[data-theme="slate"]{
+  color-scheme:dark;
+  --bg:#0e1526; --s1:#151d31; --s2:#1a2439; --s3:#212c44; --s4:#293654;
+  --line:#273452; --line2:#202b46; --line-hi:#374868;
+  --ink:#e7edf8; --ink2:#b5c1d7; --mute:#8292ad; --ghost:#586685;
+  --acc:#6fa9ff; --acc-deep:#3b7ae0; --acc-soft:rgba(111,169,255,.13); --acc-line:rgba(111,169,255,.38); --acc-glow:rgba(111,169,255,.6); --on-acc:#07111f;
+  --es:#3ad8c0; --es-soft:rgba(58,216,192,.13); --es-line:rgba(58,216,192,.38); --es-hover:rgba(58,216,192,.24); --es-glow:rgba(58,216,192,.8); --on-es:#06201b;
+  --crit:#ff6b79; --high:#ffa24f; --med:#f5d062; --low:#95a3bb; --ok:#4ad98d; --info:#b49cff;
+  --crit-soft:rgba(255,107,121,.15); --high-soft:rgba(255,162,79,.15); --med-soft:rgba(245,208,98,.15); --low-soft:rgba(149,163,187,.16); --ok-soft:rgba(74,217,141,.15);
+  --ok-ring:rgba(74,217,141,.16); --ok-ring-wide:rgba(74,217,141,.05); --crit-ring:rgba(255,107,121,.16);
+  --sel:rgba(111,169,255,.3); --scroll:#2c3a58; --row-hover:rgba(255,255,255,.02);
+  --topbar:rgba(14,21,38,.82); --scrim:rgba(8,12,24,.7); --modal-shadow:0 30px 80px -20px rgba(0,0,0,.8);
+  --shadow:0 1px 0 rgba(255,255,255,.025) inset, 0 8px 24px -16px rgba(0,0,0,.65);
+}
+
+/* ---- Indigo: warm violet midnight ---- */
+:root[data-theme="indigo"]{
+  color-scheme:dark;
+  --bg:#0e0c1c; --s1:#151229; --s2:#1b1733; --s3:#221d40; --s4:#2b254e;
+  --line:#2a2449; --line2:#221d3e; --line-hi:#3c3465;
+  --ink:#ece9f7; --ink2:#bdb6d6; --mute:#8a82ab; --ghost:#5b5380;
+  --acc:#9a8cff; --acc-deep:#6b5ce6; --acc-soft:rgba(154,140,255,.13); --acc-line:rgba(154,140,255,.38); --acc-glow:rgba(154,140,255,.6); --on-acc:#0e0b22;
+  --es:#38dcc6; --es-soft:rgba(56,220,198,.13); --es-line:rgba(56,220,198,.38); --es-hover:rgba(56,220,198,.24); --es-glow:rgba(56,220,198,.8); --on-es:#06201b;
+  --crit:#ff6882; --high:#ffa15c; --med:#f7d05e; --low:#9d97b8; --ok:#4fdc9c; --info:#e79cff;
+  --crit-soft:rgba(255,104,130,.15); --high-soft:rgba(255,161,92,.15); --med-soft:rgba(247,208,94,.15); --low-soft:rgba(157,151,184,.16); --ok-soft:rgba(79,220,156,.15);
+  --ok-ring:rgba(79,220,156,.16); --ok-ring-wide:rgba(79,220,156,.05); --crit-ring:rgba(255,104,130,.16);
+  --sel:rgba(154,140,255,.3); --scroll:#2f2852; --row-hover:rgba(255,255,255,.02);
+  --topbar:rgba(14,12,28,.82); --scrim:rgba(8,6,20,.7); --modal-shadow:0 30px 80px -20px rgba(0,0,0,.8);
+  --shadow:0 1px 0 rgba(255,255,255,.025) inset, 0 8px 24px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+::selection{background:var(--sel)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:99px;border:3px solid var(--bg)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--mono)}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none !important}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--s1);border-right:1px solid var(--line);padding:18px 14px 14px}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 22px}
+.brand .mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--acc),var(--acc-deep));display:grid;place-items:center;flex:none;box-shadow:0 4px 14px -4px var(--acc-glow)}
+.brand .mark svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.brand .name{font-weight:700;font-size:15.5px;letter-spacing:-.01em;line-height:1.15}
+.brand .name small{display:block;color:var(--mute);font-weight:500;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav .lbl{color:var(--ghost);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:14px 10px 6px}
+.nav a{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;color:var(--ink2);font-size:13px;font-weight:500;cursor:pointer;transition:background .12s,color .12s;position:relative}
+.nav a svg.i{color:var(--mute)}
+.nav a:hover{background:var(--s2);color:var(--ink)}
+.nav a.active{background:var(--acc-soft);color:var(--ink)}
+.nav a.active svg.i{color:var(--acc)}
+.nav a.active::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--acc)}
+.nav a .ext{margin-left:auto;color:var(--ghost)}
+.nav a .ext svg.i{width:13px;height:13px}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.status{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink2);padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--s2)}
+.status small{display:block;color:var(--mute);font-size:11px}
+.dot{width:7px;height:7px;border-radius:99px;background:var(--ok);flex:none;box-shadow:0 0 0 3px var(--ok-ring)}
+.dot.bad{background:var(--crit);box-shadow:0 0 0 3px var(--crit-ring)}
+.dot.live{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px var(--ok-ring)}50%{box-shadow:0 0 0 6px var(--ok-ring-wide)}}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:0 28px;height:54px;border-bottom:1px solid var(--line);background:var(--topbar);backdrop-filter:blur(10px)}
+/* theme switcher — segmented control; swatches are literal previews of each theme, so they are intentionally fixed colours */
+.theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--s2);margin-left:4px}
+.theme-sw button{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px 0 7px;border:none;border-radius:999px;background:transparent;color:var(--mute);font-size:11.5px;font-weight:500;cursor:pointer;transition:background .12s,color .12s;white-space:nowrap}
+.theme-sw button:hover{color:var(--ink);background:var(--s3)}
+.theme-sw button[aria-checked="true"]{background:var(--s1);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.18),0 0 0 1px var(--line)}
+.theme-sw .sw{width:11px;height:11px;border-radius:99px;flex:none;box-shadow:inset 0 0 0 1px rgba(127,127,127,.35)}
+.theme-sw .sw.graphite{background:linear-gradient(135deg,#10141b 50%,#5aa2ff 50%)}
+.theme-sw .sw.light{background:linear-gradient(135deg,#ffffff 50%,#2563eb 50%)}
+.theme-sw .sw.slate{background:linear-gradient(135deg,#151d31 50%,#6fa9ff 50%)}
+.theme-sw .sw.indigo{background:linear-gradient(135deg,#151229 50%,#9a8cff 50%)}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);white-space:nowrap}
+.crumb b{color:var(--ink);font-weight:600}
+.crumb .sep{color:var(--ghost)}
+.topbar .sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:12px;color:var(--ink2);background:var(--s2);white-space:nowrap}
+.pill .k{color:var(--mute)}
+.pill b{font-weight:600;color:var(--ink)}
+.mobile-nav{display:none}
+
+.content{padding:28px;max-width:1320px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.page-head h1{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.page-head p{color:var(--mute);font-size:13px;margin-top:5px;max-width:72ch}
+.page-head .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:8px}
+.page-head .eyebrow.scan{color:var(--es)}
+.page-head .actions{display:flex;align-items:center;gap:10px}
+
+/* ---------- primitives ---------- */
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);min-width:0;overflow:hidden}
+.tblwrap{overflow-x:auto}
+table.fixed{table-layout:fixed}
+.card-hd{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line2);min-height:48px}
+.card-hd h3{font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.card-hd h3 .cnt{color:var(--mute);font-weight:500}
+.card-hd .meta{margin-left:auto;color:var(--mute);font-size:12px;display:flex;align-items:center;gap:10px}
+.card-bd{padding:16px 18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--s2);color:var(--ink);font-weight:600;font-size:13px;padding:0 16px;height:38px;border-radius:9px;cursor:pointer;transition:all .12s;white-space:nowrap}
+.btn:hover{border-color:var(--line-hi);background:var(--s3)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;cursor:progress;transform:none}
+.btn.primary{background:var(--acc);border-color:transparent;color:var(--on-acc);box-shadow:0 6px 18px -8px var(--acc-glow)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.es{background:var(--es);border-color:transparent;color:var(--on-es);box-shadow:0 6px 18px -8px var(--es-glow)}
+.btn.es:hover{filter:brightness(1.08)}
+.btn.sm{height:30px;padding:0 11px;font-size:12px;border-radius:7px}
+.btn.ghost{background:transparent}
+.btn svg.i{width:14px;height:14px}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;border:1px solid var(--line);background:var(--s2);color:var(--es);flex:none;transition:all .12s;cursor:pointer}
+.ibtn svg.i{width:14px;height:14px}
+.ibtn:hover{background:var(--es-soft);border-color:var(--es-line)}
+.ibtn.sm{width:24px;height:24px;border-radius:6px}
+.ibtn.sm svg.i{width:12px;height:12px}
+.ibtn.disabled{opacity:.3;pointer-events:none}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:99px;animation:sp .7s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--mute);text-align:center;padding:36px 20px;font-size:13px}
+.empty svg.i{width:28px;height:28px;color:var(--ghost);stroke-width:1.5}
+.empty small{color:var(--ghost);font-size:12px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:5px;background:var(--s3);color:var(--ink2);border:1px solid var(--line)}
+.sev{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:5px;white-space:nowrap}
+.sev::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+.sev.critical{background:var(--crit-soft);color:var(--crit)}
+.sev.high{background:var(--high-soft);color:var(--high)}
+.sev.medium{background:var(--med-soft);color:var(--med)}
+.sev.low{background:var(--low-soft);color:var(--low)}
+.vpill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.vpill::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+.vpill.confirmed{background:var(--crit-soft);color:var(--crit)}
+.vpill.refuted{background:var(--ok-soft);color:var(--ok)}
+.vpill.inconclusive{background:var(--med-soft);color:var(--med)}
+.vpill.unknown{background:var(--low-soft);color:var(--low)}
+.bar{height:5px;border-radius:99px;background:var(--s3);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--acc);transition:width .5s ease}
+.bar.es i{background:var(--es)}
+
+/* ---------- KPI tiles ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;min-height:112px}
+.kpi .top{display:flex;align-items:center;justify-content:space-between;color:var(--mute);font-size:11.5px;font-weight:500;letter-spacing:.02em}
+.kpi .top svg.i{width:15px;height:15px;color:var(--ghost)}
+.kpi .val{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .val small{font-size:14px;color:var(--mute);font-weight:500;letter-spacing:0;margin-left:3px}
+.kpi .sub{color:var(--mute);font-size:12px;margin-top:auto}
+.kpi .sub b{color:var(--ink2);font-weight:500}
+.kpi.es .val{color:var(--es)}
+.dots{display:flex;gap:4px;margin-top:auto}
+.dots i{flex:1;height:5px;border-radius:99px;background:var(--s3)}
+.dots i.on{background:var(--es)}
+
+/* ---------- hunt composer ---------- */
+.composer{background:var(--s1);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.composer .row{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px}
+.composer .row svg.i{color:var(--acc);width:18px;height:18px}
+.composer input{flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:var(--sans);font-size:15.5px;min-width:0;padding:10px 0}
+.composer input::placeholder{color:var(--ghost)}
+.composer .foot{display:flex;align-items:center;gap:10px;padding:10px 18px 12px;border-top:1px solid var(--line2);background:var(--s2);flex-wrap:wrap}
+.composer .foot .hint{color:var(--mute);font-size:12px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.composer .foot .hint b{color:var(--ink2);font-weight:500}
+.composer .foot kbd{font-family:var(--sans);font-size:10.5px;font-weight:600;color:var(--mute);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 5px;background:var(--s1)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.chip{font-size:12px;color:var(--ink2);border:1px solid var(--line);background:var(--s1);border-radius:999px;padding:4px 11px;cursor:pointer;transition:.12s;white-space:nowrap}
+.chip:hover{color:var(--acc);border-color:var(--acc-line);background:var(--acc-soft)}
+
+/* ---------- hunt status strip ---------- */
+.hstatus{display:flex;align-items:center;gap:14px;padding:12px 18px;border:1px solid var(--acc-line);background:var(--acc-soft);border-radius:var(--r)}
+.hstatus .spin{color:var(--acc)}
+.hstatus .txt{flex:1;min-width:0;font-size:13px}
+.hstatus .txt b{font-weight:600}
+.hstatus .txt span{color:var(--ink2);display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
+.hstatus .ctr{display:flex;gap:18px;font-size:12px;color:var(--mute)}
+.hstatus .ctr b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------- verdict hero ---------- */
+.verdict{border:1px solid var(--line);border-radius:12px;background:var(--s1);box-shadow:var(--shadow);overflow:hidden;animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.verdict .strip{height:4px;background:var(--low)}
+.verdict.confirmed .strip{background:var(--crit)}
+.verdict.refuted .strip{background:var(--ok)}
+.verdict.inconclusive .strip{background:var(--med)}
+.verdict .inner{display:grid;grid-template-columns:1fr auto;gap:28px;padding:22px 24px}
+.verdict .lbl{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.vword{display:flex;align-items:center;gap:12px;margin-top:6px;font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.vword .sq{width:14px;height:14px;border-radius:4px;background:currentColor;box-shadow:0 0 18px currentColor}
+.verdict.confirmed .vword{color:var(--crit)}
+.verdict.refuted .vword{color:var(--ok)}
+.verdict.inconclusive .vword{color:var(--med)}
+.verdict .hyp{margin-top:12px;color:var(--ink2);font-size:13px}
+.verdict .hyp b{color:var(--ink);font-weight:500}
+.verdict .sum{margin-top:12px;color:var(--ink2);font-size:13.5px;line-height:1.6;max-width:84ch}
+.verdict .foot{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.vm{display:grid;grid-template-columns:repeat(3,auto);gap:0;border:1px solid var(--line);border-radius:10px;background:var(--s2);align-self:start}
+.vm > div{padding:14px 20px;text-align:center;border-left:1px solid var(--line)}
+.vm > div:first-child{border-left:none}
+.vm b{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.vm span{display:block;margin-top:6px;color:var(--mute);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.vm .meter{height:3px;border-radius:99px;background:var(--s4);margin-top:8px;overflow:hidden}
+.vm .meter i{display:block;height:100%;background:var(--acc)}
+
+/* ---------- findings ---------- */
+.findings{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.finding{position:relative;border:1px solid var(--line);border-radius:var(--r);background:var(--s2);padding:14px 16px 14px 18px;display:flex;flex-direction:column;gap:9px}
+.finding::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--low)}
+.finding.critical::before{background:var(--crit)}
+.finding.high::before{background:var(--high)}
+.finding.medium::before{background:var(--med)}
+.finding .frow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.finding .tech{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:6px;min-width:0}
+.finding .tech .id{font-family:var(--mono);color:var(--acc);font-weight:500}
+.finding .claim{font-size:13.5px;color:var(--ink);line-height:1.5}
+.finding .cite{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}
+.finding .cite .k{font-size:11px;color:var(--mute);margin-right:2px}
+.epill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--es);background:var(--es-soft);border:1px solid var(--es-line);border-radius:6px;padding:3px 8px;cursor:pointer;transition:.12s}
+.epill svg.i{width:11px;height:11px}
+.epill:hover{background:var(--es-hover)}
+.epill.nolink{color:var(--ink2);background:var(--s3);border-color:var(--line);cursor:default}
+.rejected{border-top:1px dashed var(--line);margin-top:16px;padding-top:12px}
+.rejected summary{cursor:pointer;list-style:none;font-size:12px;color:var(--mute);display:flex;align-items:center;gap:8px;user-select:none}
+.rejected summary::-webkit-details-marker{display:none}
+.rejected summary svg.i{width:13px;height:13px;transition:transform .15s}
+.rejected[open] summary svg.i{transform:rotate(90deg)}
+.rejected .rj{display:flex;gap:10px;font-size:12.5px;color:var(--ink2);padding:8px 0 0 4px}
+.rejected .rj .x{color:var(--crit);flex:none;font-weight:700}
+.rejected .rj s{color:var(--mute)}
+.rejected .rj em{color:var(--mute);font-style:normal}
+
+/* ---------- tabs / evidence / trace ---------- */
+.tabs{display:flex;gap:2px;margin-left:-6px}
+.tabs button{border:none;background:none;color:var(--mute);font-weight:500;font-size:12.5px;padding:7px 10px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.tabs button .n{font-family:var(--mono);font-size:11px;color:var(--ghost);background:var(--s3);padding:0 6px;border-radius:4px;line-height:18px}
+.tabs button:hover{color:var(--ink);background:var(--s2)}
+.tabs button.on{color:var(--ink);background:var(--s3)}
+.tabs button.on .n{color:var(--ink2)}
+.tabpane[hidden]{display:none}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:10px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 16px;border-bottom:1px solid var(--line2);font-size:13px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--row-hover)}
+th.r,td.r{text-align:right}
+td.mono{font-family:var(--mono);font-size:12px}
+td .q{font-family:var(--mono);font-size:12px;color:var(--ink2);display:block;max-width:520px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td .q.dim{color:var(--mute)}
+td .hits{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:500}
+td .hits.zero{color:var(--ghost)}
+td .hits.pos{color:var(--ok)}
+tr.flash td{background:var(--es-soft) !important;transition:background .2s}
+.trace{font-family:var(--mono);font-size:12px;line-height:1.7;max-height:440px;overflow:auto;padding:10px 14px}
+.trace.short{max-height:220px}
+.ev{display:grid;grid-template-columns:62px 18px 1fr;gap:10px;padding:3px 0;align-items:start;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.ev .ts{color:var(--ghost);font-size:11px;padding-top:1px}
+.ev .ic{color:var(--mute);padding-top:3px}
+.ev .ic svg.i{width:13px;height:13px}
+.ev .msg{color:var(--ink2);word-break:break-word;white-space:pre-wrap;min-width:0}
+.ev .msg b{color:var(--ink);font-weight:500}
+.ev .msg .dim{color:var(--mute)}
+.ev.tool .ic{color:var(--acc)}
+.ev.probe .ic{color:var(--info)}
+.ev.finding .ic{color:var(--high)}
+.ev.finding .msg{color:var(--ink)}
+.ev.verdict .ic{color:var(--ok)}
+.ev.verdict .msg{color:var(--ink);font-weight:600}
+.ev.err .ic,.ev.err .msg{color:var(--crit)}
+.ev.sys .ic{color:var(--ghost)}
+.ev.sys .msg{color:var(--mute)}
+.ev.thought .ic{color:var(--info)}
+.ev.thought .msg{color:var(--mute);font-style:italic}
+pre.report{font-family:var(--mono);font-size:12px;line-height:1.65;color:var(--ink2);white-space:pre-wrap;word-break:break-word;max-height:560px;overflow:auto;padding:16px 18px}
+
+/* ---------- scan page ---------- */
+.scan-grid{display:grid;grid-template-columns:3fr 2fr;gap:20px;align-items:start}
+.board{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.tactic{background:var(--s2);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:160px}
+.tactic h4{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 2px 6px;border-bottom:1px solid var(--line2)}
+.tactic h4 .n{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--es)}
+.tactic h4 .n.zero{color:var(--ghost)}
+.tactic .none{color:var(--ghost);font-size:12px;padding:12px 4px;text-align:center}
+.tchip{position:relative;border:1px solid var(--line);border-radius:8px;padding:9px 10px 9px 13px;background:var(--s1);display:flex;flex-direction:column;gap:5px;transition:border-color .12s}
+.tchip::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--high)}
+.tchip.critical::before{background:var(--crit)}
+.tchip.medium::before{background:var(--med)}
+.tchip.low::before{background:var(--low)}
+.tchip:hover{border-color:var(--line-hi)}
+.tchip .r1{display:flex;align-items:center;gap:6px}
+.tchip .id{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--acc)}
+.tchip .ibtn{margin-left:auto}
+.tchip .nm{color:var(--ink2);font-size:12px;line-height:1.35}
+.tchip .ct{font-family:var(--mono);font-size:11px;color:var(--mute)}
+.tchip .ct b{color:var(--ink);font-weight:500}
+.dlist{display:flex;flex-direction:column}
+.drow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line2)}
+.drow:last-child{border-bottom:none}
+.drow .t{min-width:0}
+.drow .t .claim{font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drow .t .sub{font-size:11.5px;color:var(--mute);margin-top:2px;display:flex;gap:8px;align-items:center}
+.drow .t .sub .id{font-family:var(--mono);color:var(--acc)}
+.drow .right{display:flex;align-items:center;gap:10px}
+.drow .right .ct{font-family:var(--mono);font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.runbox{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.runbox .st{display:flex;align-items:center;gap:10px;font-size:13px}
+.runbox .st .spin{color:var(--es)}
+.runbox .st b{font-weight:600}
+.runbox .st span{color:var(--mute)}
+.runbox .pl{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);font-family:var(--mono)}
+.scan-log-wrap{border-top:1px solid var(--line2)}
+.scan-log-wrap summary{cursor:pointer;list-style:none;padding:11px 18px;font-size:12.5px;color:var(--mute);display:flex;align-items:center;gap:8px;user-select:none}
+.scan-log-wrap summary::-webkit-details-marker{display:none}
+.scan-log-wrap summary svg.i{width:13px;height:13px;transition:transform .15s}
+.scan-log-wrap[open] summary svg.i{transform:rotate(90deg)}
+.scan-log-wrap summary .n{margin-left:auto;font-family:var(--mono);font-size:11px}
+
+/* ---------- sources ---------- */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.share{display:flex;align-items:center;gap:10px}
+.share .bar{flex:1;min-width:60px}
+.share .pct{font-family:var(--mono);font-size:11px;color:var(--mute);width:36px;text-align:right}
+.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mode{border:1px solid var(--line);border-radius:var(--r);background:var(--s2);padding:14px 16px}
+.mode b{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)}
+.mode b svg.i{width:15px;height:15px;color:var(--acc)}
+.mode p{color:var(--mute);font-size:12.5px;margin-top:6px;line-height:1.5}
+
+/* ---------- history ---------- */
+tr.row-click{cursor:pointer}
+td.hyp span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.when{color:var(--mute);white-space:nowrap}
+td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--ghost)}
+.modal{position:fixed;inset:0;z-index:50;background:var(--scrim);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px}
+.modal .box{width:min(960px,100%);max-height:88vh;display:flex;flex-direction:column;background:var(--s1);border:1px solid var(--line-hi);border-radius:12px;box-shadow:var(--modal-shadow);overflow:hidden}
+.modal .box pre.report{max-height:none;flex:1}
+
+/* ---------- responsive ---------- */
+@media(max-width:1180px){.board{grid-template-columns:repeat(4,1fr)}.findings{grid-template-columns:1fr}.verdict .inner{grid-template-columns:1fr}.vm{justify-self:start}.theme-sw button .lb{display:none}.theme-sw button{padding:0 6px}}
+@media(max-width:960px){
+  .app{grid-template-columns:1fr}.sidebar{display:none}
+  .mobile-nav{display:flex;gap:4px;overflow:auto;padding:0 16px;border-bottom:1px solid var(--line);background:var(--s1)}
+  .mobile-nav a{padding:12px 10px;font-size:13px;font-weight:500;color:var(--mute);white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer}
+  .mobile-nav a.active{color:var(--ink);border-bottom-color:var(--acc)}
+  .topbar{padding:0 16px}.content{padding:16px}.theme-sw button .lb{display:none}.theme-sw button{padding:0 6px}
+  .kpis{grid-template-columns:repeat(2,1fr)}.scan-grid,.grid-2{grid-template-columns:1fr}.board{grid-template-columns:repeat(2,1fr)}.modes{grid-template-columns:1fr 1fr}
+  .composer .foot{gap:8px}.chips{margin-left:0}
+  .vm{grid-template-columns:repeat(3,1fr);width:100%}
+}
+@media(max-width:560px){.kpis,.board,.modes{grid-template-columns:1fr}.topbar .pill.hide-sm{display:none}}
+</style>
+<script>
+/* apply the persisted theme before first paint so there is no flash of the default palette */
+(function(){ try{ var t=localStorage.getItem('sherlock_theme'); if(t&&t!=='graphite') document.documentElement.dataset.theme=t; }catch(_){} })();
+</script>
+</head>
+<body>
+<div class="app">
+  <!-- ======================= sidebar ======================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/><path d="M8 10.5h5M10.5 8v5"/></svg></div>
+      <div class="name">Sherlock<small>Agentic threat hunting</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <span class="lbl">Operate</span>
+      <a data-view="hunt" class="active"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Hunt</a>
+      <a data-view="scan"><svg class="i" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Detection scan</a>
+      <span class="lbl">Observe</span>
+      <a data-view="sources"><svg class="i" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Sources &amp; schemas</a>
+      <a data-view="hunts"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hunt history</a>
+      <span class="lbl">External</span>
+      <a href="http://localhost:5601" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>Kibana<span class="ext"><svg class="i" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></span></a>
+      <a href="http://localhost:9200/_cat/indices?v" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Elasticsearch<span class="ext"><svg class="i" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></span></a>
+    </nav>
+    <div class="side-foot">
+      <div class="status"><span class="dot" id="cluster-dot"></span><div><div id="cluster-txt">Connecting…</div><small id="cluster-sub">Elasticsearch · MCP</small></div></div>
+    </div>
+  </aside>
+
+  <!-- ======================= main ======================= -->
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb"><b>Sherlock</b><span class="sep">/</span><span id="crumb">Hunt</span></div>
+      <div class="sp"></div>
+      <span class="pill hide-sm"><span class="k">events</span><b id="tb-events" class="num">—</b></span>
+      <span class="pill hide-sm"><span class="k">sources</span><b id="tb-sources" class="num">—</b></span>
+      <span class="pill"><span class="k">mcp</span><b id="tb-mcp">—</b></span>
+      <div class="theme-sw" id="theme-sw" role="radiogroup" aria-label="Colour theme" title="Colour theme">
+        <button type="button" role="radio" data-theme="graphite" aria-checked="true"><span class="sw graphite"></span><span class="lb">Graphite</span></button>
+        <button type="button" role="radio" data-theme="light" aria-checked="false"><span class="sw light"></span><span class="lb">Light</span></button>
+        <button type="button" role="radio" data-theme="slate" aria-checked="false"><span class="sw slate"></span><span class="lb">Slate</span></button>
+        <button type="button" role="radio" data-theme="indigo" aria-checked="false"><span class="sw indigo"></span><span class="lb">Indigo</span></button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav">
+      <a data-view="hunt" class="active">Hunt</a><a data-view="scan">Scan</a><a data-view="sources">Sources</a><a data-view="hunts">History</a>
+    </nav>
+
+    <!-- ===================== HUNT ===================== -->
+    <section class="content view" id="view-hunt">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow"><svg class="i" viewBox="0 0 24 24" style="width:13px;height:13px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Ad-hoc investigation</div>
+          <h1>Threat hunting</h1>
+          <p>State a hypothesis in plain English. The agent plans, queries the SIEM through MCP tools, and returns a verdict in which every claim cites the query that produced it.</p>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="row">
+          <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="hyp" value="Was a backdoor local account created on this host?" placeholder="Describe what you think happened…" autocomplete="off" spellcheck="false"/>
+          <button class="btn primary" id="run-hunt"><svg class="i" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M8 5v14l11-7z"/></svg>Run hunt</button>
+        </div>
+        <div class="foot">
+          <span class="hint" id="hunt-meta"><b>LLM agent</b> · <kbd>Enter</kbd> to run</span>
+          <div class="chips" id="chips"></div>
+        </div>
+      </div>
+
+      <div id="hunt-results" style="display:flex;flex-direction:column;gap:20px" hidden>
+        <div class="hstatus" id="hunt-status" hidden>
+          <span class="spin"></span>
+          <div class="txt"><b id="hs-phase">Hunting…</b><span id="hs-last">connecting to engine</span></div>
+          <div class="ctr"><span><b id="hs-calls">0</b> tool calls</span><span><b id="hs-findings">0</b> findings</span><span><b id="hs-elapsed">0s</b></span></div>
+        </div>
+
+        <div class="verdict" id="verdict" hidden>
+          <div class="strip"></div>
+          <div class="inner">
+            <div>
+              <div class="lbl">Verdict</div>
+              <div class="vword"><span class="sq"></span><span id="v-word">—</span></div>
+              <div class="hyp">Hypothesis · <b id="v-hyp"></b></div>
+              <div class="sum" id="v-summary"></div>
+              <div class="foot">
+                <span class="tag" id="v-id">hunt-…</span>
+                <span class="tag" id="v-engine">engine</span>
+                <span class="tag" id="v-mcp">mcp</span>
+                <span class="tag" id="v-time">—</span>
+              </div>
+            </div>
+            <div class="vm">
+              <div><b id="v-conf">—</b><span>Confidence</span><div class="meter"><i id="v-conf-bar" style="width:0"></i></div></div>
+              <div><b id="v-integ">—</b><span>Evidence integrity</span><div class="meter"><i id="v-integ-bar" style="width:0"></i></div></div>
+              <div><b id="v-queries">—</b><span>Queries run</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="findings-card" hidden>
+          <div class="card-hd"><h3>Verified findings <span class="cnt" id="findings-count"></span></h3><div class="meta">Each finding cites the evidence that produced it · click a citation to open the documents in Elasticsearch</div></div>
+          <div class="card-bd">
+            <div class="findings" id="findings"></div>
+            <details class="rejected" id="rejected-wrap" hidden>
+              <summary><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg><span id="rejected-count">0 claims rejected by the guardrail</span></summary>
+              <div id="rejected"></div>
+            </details>
+          </div>
+        </div>
+
+        <div class="card" id="detail-card" hidden>
+          <div class="card-hd">
+            <div class="tabs" id="tabs">
+              <button data-tab="evidence" class="on">Evidence <span class="n" id="ev-count">0</span></button>
+              <button data-tab="trace">Agent trace <span class="n" id="trace-count">0</span></button>
+              <button data-tab="report">Report</button>
+            </div>
+            <div class="meta"><button class="btn sm ghost" id="dl-report"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>Download .md</button></div>
+          </div>
+          <div class="tabpane tblwrap" id="tab-evidence">
+            <table><thead><tr><th>ID</th><th>Tool</th><th>Query / result</th><th>Index</th><th class="r">Hits</th><th></th></tr></thead><tbody id="evidence-tbody"></tbody></table>
+          </div>
+          <div class="tabpane" id="tab-trace" hidden><div class="trace" id="trace"></div></div>
+          <div class="tabpane" id="tab-report" hidden><pre class="report" id="report-pre"></pre></div>
+        </div>
+      </div>
+
+      <div class="card" id="hunt-empty">
+        <div class="empty">
+          <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <div>Ready to hunt.</div>
+          <small>Run a hypothesis to watch the agent plan, query through MCP, and deliver an evidenced verdict.</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCAN ===================== -->
+    <section class="content view" id="view-scan" hidden>
+      <div class="page-head">
+        <div>
+          <div class="eyebrow scan"><svg class="i" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/></svg>Periodic detection monitoring</div>
+          <h1>Detection scan</h1>
+          <p>No hypothesis. A deterministic battery of ATT&amp;CK probes sweeps the entire corpus and reports detection posture — identical results on every run, so it is audit-grade.</p>
+        </div>
+        <div class="actions">
+          <span class="pill" id="scan-sub"><span class="k">last run</span><b>never</b></span>
+          <button class="btn es" id="run-scan"><svg class="i" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M8 5v14l11-7z"/></svg>Run scan</button>
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="top">Detection rules<svg class="i" viewBox="0 0 24 24"><path d="M14.6 6.3a1 1 0 0 0 0 1.4l1.7 1.7a1 1 0 0 0 1.4 0l3.6-3.6a6 6 0 0 1-7.9 7.9l-6.8 6.8a2.1 2.1 0 0 1-3-3l6.8-6.8a6 6 0 0 1 7.9-7.9z"/></svg></div><div class="val" id="k-rules">15</div><div class="sub">ATT&amp;CK probes · <b>deterministic</b></div></div>
+        <div class="kpi es"><div class="top">Techniques detected<svg class="i" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="val" id="k-det">—<small id="k-det-of"></small></div><div class="bar es"><i id="k-det-bar" style="width:0"></i></div></div>
+        <div class="kpi"><div class="top">Tactics covered<svg class="i" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></div><div class="val" id="k-tac">—<small>/ 7</small></div><div class="dots" id="k-tac-dots"></div></div>
+        <div class="kpi"><div class="top">Last run<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="val" id="k-when" style="font-size:22px">never</div><div class="sub" id="k-when-sub">No scan recorded on this browser</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><h3>ATT&amp;CK coverage <span class="cnt" id="board-meta"></span></h3><div class="meta" id="scan-window"></div></div>
+        <div class="card-bd"><div class="board" id="board"></div></div>
+      </div>
+
+      <div class="scan-grid">
+        <div class="card">
+          <div class="card-hd"><h3>Recent detections <span class="cnt" id="recent-meta"></span></h3><div class="meta">ordered by severity</div></div>
+          <div class="dlist" id="recent"></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Scan run</h3><div class="meta" id="scan-run-id"></div></div>
+          <div class="runbox">
+            <div class="st" id="scan-state"><span class="dot" id="scan-dot" style="background:var(--ghost);box-shadow:none"></span><b id="scan-state-txt">Idle</b><span id="scan-state-sub">press Run scan to sweep the corpus</span></div>
+            <div class="bar es"><i id="scan-progress" style="width:0"></i></div>
+            <div class="pl"><span id="scan-prog-txt">0 / 15 probes</span><span id="scan-prog-det">0 detections</span></div>
+          </div>
+          <details class="scan-log-wrap" id="scan-log-wrap">
+            <summary><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>Run log<span class="n" id="scan-log-count">0 events</span></summary>
+            <div class="trace short" id="scan-log"></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SOURCES ===================== -->
+    <section class="content view" id="view-sources" hidden>
+      <div class="page-head">
+        <div>
+          <div class="eyebrow"><svg class="i" viewBox="0 0 24 24" style="width:13px;height:13px"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/></svg>Data plane</div>
+          <h1>Sources &amp; schemas</h1>
+          <p>Every source is onboarded by an agent that fingerprints, validates and registers its parsing schema — no hand-written parsers. Ingest via pull, push or stream.</p>
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="top">Events indexed<svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div><div class="val" id="o-events">—</div><div class="sub">across all sources</div></div>
+        <div class="kpi"><div class="top">Log sources<svg class="i" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/></svg></div><div class="val" id="o-sources">—</div><div class="sub">one index per source</div></div>
+        <div class="kpi"><div class="top">Registered schemas<svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><div class="val" id="o-schemas">—</div><div class="sub" id="o-schemas-sub">agent-built parsers</div></div>
+        <div class="kpi"><div class="top">Hunts persisted<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="val" id="o-hunts">—</div><div class="sub">with verdict and evidence</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="card-hd"><h3>Ingested sources <span class="cnt" id="src-count"></span></h3></div>
+          <div class="tblwrap"><table><thead><tr><th>Source</th><th>Share</th><th class="r">Documents</th><th>Time range</th></tr></thead><tbody id="src-tbody"></tbody></table></div></div>
+        <div class="card"><div class="card-hd"><h3>Registered schemas <span class="cnt" id="sch-count"></span></h3></div>
+          <div class="tblwrap"><table><thead><tr><th>Schema</th><th>Parser</th><th>Built by</th><th class="r">Fields</th><th class="r">Validation</th></tr></thead><tbody id="sch-tbody"></tbody></table></div></div>
+      </div>
+      <div class="card"><div class="card-hd"><h3>Ingestion modes</h3></div>
+        <div class="card-bd"><div class="modes">
+          <div class="mode"><b><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>Pull</b><p>Drop a file into the watched directory; it is auto-schema'd and indexed.</p></div>
+          <div class="mode"><b><svg class="i" viewBox="0 0 24 24"><path d="M12 21V9m0 0 4 4m-4-4-4 4M4 3h16"/></svg>Push</b><p>An endpoint agent POSTs a batch to <span class="tag">/api/ingest/push</span>.</p></div>
+          <div class="mode"><b><svg class="i" viewBox="0 0 24 24"><path d="M4 12h4l3-7 4 14 3-7h2"/></svg>Stream</b><p>A continuous syslog/UDP feed is consumed and flushed in batches.</p></div>
+          <div class="mode"><b><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Auto-schema</b><p>Fingerprint → reuse or propose → validate → register.</p></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ===================== HISTORY ===================== -->
+    <section class="content view" id="view-hunts" hidden>
+      <div class="page-head">
+        <div>
+          <div class="eyebrow"><svg class="i" viewBox="0 0 24 24" style="width:13px;height:13px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Audit trail</div>
+          <h1>Hunt history</h1>
+          <p>Every hunt and scan is persisted with its verdict, evidence integrity and full report. Click a row to read the report.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h3>Recent runs <span class="cnt" id="hunts-count"></span></h3></div>
+        <div class="tblwrap"><table class="fixed" style="min-width:760px"><colgroup><col><col style="width:150px"><col style="width:110px"><col style="width:100px"><col style="width:95px"><col style="width:175px"></colgroup>
+          <thead><tr><th>Hypothesis</th><th>Verdict</th><th class="r">Confidence</th><th class="r">Integrity</th><th class="r">Findings</th><th>Finished</th></tr></thead><tbody id="hunts-tbody"></tbody></table></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="box">
+    <div class="card-hd"><h3 id="modal-title">Report</h3><div class="meta"><button class="btn sm ghost" id="modal-dl"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>Download .md</button><button class="btn sm" id="modal-close">Close</button></div></div>
+    <pre class="report" id="modal-pre"></pre>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   helpers
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct = x => Math.round((Number(x) || 0) * 100) + '%';
+const fmtN = n => (Number(n) || 0).toLocaleString();
+const SEVS = ['critical','high','medium','low'];
+const sevOf = f => SEVS.includes(String(f && f.severity)) ? f.severity : 'low';
+const RANK = {critical:0, high:1, medium:2, low:3};
+function timeAgo(iso){ try{ const s=(Date.now()-new Date(iso).getTime())/1000; if(!(s>=0)) return 'just now';
+  if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+' min ago'; if(s<86400) return Math.floor(s/3600)+' h ago'; return Math.floor(s/86400)+' d ago'; }catch(_){ return ''; } }
+function fmtTime(iso){ try{ const d=new Date(iso); if(isNaN(d)) return String(iso||'').slice(0,19).replace('T',' ');
+  return d.toLocaleString('en-GB',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(_){ return ''; } }
+function shortJSON(o, n=90){ try{ const s=typeof o==='string'?o:JSON.stringify(o); return s.length>n?s.slice(0,n)+'…':s; }catch(_){ return String(o); } }
+function download(name, text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/markdown'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+
+const IC = {
+  ext:'<svg class="i" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg>',
+  tool:'<svg class="i" viewBox="0 0 24 24"><path d="M14.6 6.3a1 1 0 0 0 0 1.4l1.7 1.7a1 1 0 0 0 1.4 0l3.6-3.6a6 6 0 0 1-7.9 7.9l-6.8 6.8a2.1 2.1 0 0 1-3-3l6.8-6.8a6 6 0 0 1 7.9-7.9z"/></svg>',
+  probe:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/></svg>',
+  flag:'<svg class="i" viewBox="0 0 24 24"><path d="M5 21V4h12l-2 4 2 4H5"/></svg>',
+  check:'<svg class="i" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>',
+  err:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
+  sys:'<svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>',
+  thought:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V18h8v-2.3A7 7 0 0 0 12 3zM10 21h4"/></svg>',
+};
+
+/* ES deep-link: lucene query out of es_request.body.query.bool.must[].query_string.query */
+function qstr(e){ try{ const must=((((e.es_request||{}).body||{}).query||{}).bool||{}).must||[];
+  for(const m of must){ if(m && m.query_string && m.query_string.query) return m.query_string.query; } }catch(_){} return ''; }
+function esLink(e){ const req=(e&&e.es_request)||{}; const index=req.index||'sherlock-logs-*'; const q=qstr(e);
+  const base=`http://localhost:9200/${index}/_search?size=25`;
+  return q?`${base}&q=${encodeURIComponent(q)}&default_operator=AND`:base; }
+function esBtn(e, cls=''){ if(!e || !e.es_request) return `<span class="ibtn disabled ${cls}" title="no ES query for this step">${IC.ext}</span>`;
+  const q=qstr(e); return `<a class="ibtn ${cls}" href="${esc(esLink(e))}" target="_blank" rel="noopener" title="Open matching documents in Elasticsearch${q?'\n'+esc(q):''}">${IC.ext}</a>`; }
+
+/* ATT&CK technique → tactic */
+const TACTIC = {
+  'T1003.001':'Credential Access','T1003.002':'Credential Access','T1003.004':'Credential Access',
+  'T1562.002':'Defense Evasion','T1562.004':'Defense Evasion','T1218.005':'Defense Evasion','T1070.001':'Defense Evasion',
+  'T1059.005':'Execution','T1059.001':'Execution',
+  'T1136.001':'Persistence','T1053.005':'Persistence',
+  'T1548.002':'Privilege Escalation','T1543.003':'Privilege Escalation',
+  'T1069.001':'Discovery','T1087.001':'Discovery',
+  'T1021.002':'Lateral Movement',
+};
+const TACTIC_ORDER = ['Execution','Persistence','Privilege Escalation','Defense Evasion','Credential Access','Discovery','Lateral Movement'];
+const EXAMPLES = [
+  'Was a backdoor local account created on this host?',
+  'Was LSASS process memory accessed to steal credentials?',
+  'Was the Windows Event Log service disabled to evade detection?',
+  'Was User Account Control bypassed to gain elevation?',
+  'Was mshta.exe used to proxy-execute a script?',
+  'Was a scheduled task created for persistence?',
+];
+
+/* ============================================================
+   navigation (hash-routed)
+   ============================================================ */
+const VIEWS = {hunt:'Hunt', scan:'Detection scan', sources:'Sources & schemas', hunts:'Hunt history'};
+function showView(v){
+  if(!VIEWS[v]) v='hunt';
+  $$('[data-view]').forEach(a=>a.classList.toggle('active', a.dataset.view===v));
+  $$('.view').forEach(x=>x.hidden = x.id!=='view-'+v);
+  $('#crumb').textContent = VIEWS[v];
+  if(location.hash !== '#'+v) history.replaceState(null,'','#'+v);
+  if(v==='hunts') loadHunts();
+  if(v==='sources') loadOverview();
+  if(v==='scan' && !scanRan) loadScanCache();
+  window.scrollTo({top:0});
+}
+$$('[data-view]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); showView(a.dataset.view); }));
+window.addEventListener('hashchange',()=>showView(location.hash.slice(1)));
+
+/* ============================================================
+   theme switcher — tokens only; persisted in localStorage
+   ============================================================ */
+const THEME_KEY='sherlock_theme', THEMES=['graphite','light','slate','indigo'];
+function setTheme(t, persist=true){
+  if(!THEMES.includes(t)) t='graphite';
+  document.documentElement.dataset.theme=t;
+  $$('#theme-sw button').forEach(b=>b.setAttribute('aria-checked', String(b.dataset.theme===t)));
+  if(persist){ try{ localStorage.setItem(THEME_KEY,t); }catch(_){} }
+}
+$$('#theme-sw button').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.theme)));
+$('#theme-sw').addEventListener('keydown',e=>{ if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return; e.preventDefault();
+  const cur=THEMES.indexOf(document.documentElement.dataset.theme||'graphite'); const nx=THEMES[(cur+(e.key==='ArrowRight'?1:THEMES.length-1))%THEMES.length];
+  setTheme(nx); $(`#theme-sw button[data-theme="${nx}"]`).focus(); });
+(function(){ let t='graphite'; try{ t=localStorage.getItem(THEME_KEY)||'graphite'; }catch(_){} setTheme(t,false); })();
+
+/* ============================================================
+   overview / cluster
+   ============================================================ */
+let overview = null;
+async function loadOverview(){
+  try{
+    const d = await (await fetch('/api/overview')).json(); overview = d;
+    $('#tb-events').textContent = fmtN(d.total_events);
+    $('#tb-sources').textContent = d.log_types.length;
+    $('#o-events').textContent = fmtN(d.total_events);
+    $('#o-sources').textContent = d.log_types.length;
+    $('#o-schemas').textContent = d.n_schemas;
+    $('#o-hunts').textContent = d.n_hunts;
+    const byLLM = d.schemas.filter(s=>s.by==='llm').length;
+    $('#o-schemas-sub').innerHTML = byLLM ? `<b>${byLLM}</b> proposed by LLM · ${d.schemas.length-byLLM} heuristic` : 'agent-built parsers';
+    $('#hunt-meta').innerHTML = `<b>LLM agent</b> · ${fmtN(d.total_events)} events across ${d.log_types.length} sources via MCP · <kbd>Enter</kbd> to run`;
+    const total = d.log_types.reduce((a,l)=>a+(l.count||0),0) || 1;
+    $('#src-count').textContent = d.log_types.length;
+    $('#src-tbody').innerHTML = d.log_types.map(lt=>`<tr><td class="mono" style="color:var(--acc)">${esc(lt.log_type)}</td>
+      <td><div class="share"><div class="bar"><i style="width:${Math.max(1,(lt.count||0)/total*100).toFixed(1)}%"></i></div><span class="pct">${((lt.count||0)/total*100).toFixed(0)}%</span></div></td>
+      <td class="r num">${fmtN(lt.count)}</td><td class="mono" style="color:var(--mute);font-size:11.5px;white-space:nowrap">${esc((lt.earliest||'').slice(0,16).replace('T',' '))} → ${esc((lt.latest||'').slice(0,16).replace('T',' '))}</td></tr>`).join('');
+    $('#sch-count').textContent = d.schemas.length;
+    $('#sch-tbody').innerHTML = d.schemas.map(s=>`<tr><td class="mono">${esc(s.name)}</td><td><span class="tag">${esc(s.parser||'—')}</span></td>
+      <td style="color:var(--ink2)">${esc(s.by||'—')}</td><td class="r num">${Number(s.fields)||0}</td><td class="r num" style="color:${(s.rate||0)>=0.95?'var(--ok)':'var(--med)'}">${pct(s.rate)}</td></tr>`).join('');
+    setCluster(true);
+  }catch(e){ setCluster(false); }
+}
+function setCluster(ok){
+  $('#cluster-dot').className = 'dot' + (ok?'':' bad');
+  $('#cluster-txt').textContent = ok ? 'Cluster healthy' : 'Cluster unreachable';
+  $('#cluster-sub').textContent = ok ? 'Elasticsearch · MCP ready' : 'check Elasticsearch';
+}
+
+/* ============================================================
+   hunt history + report modal
+   ============================================================ */
+async function loadHunts(){
+  try{
+    const d = await (await fetch('/api/hunts')).json();
+    const tb = $('#hunts-tbody'); $('#hunts-count').textContent = d.hunts.length;
+    if(!d.hunts.length){ tb.innerHTML='<tr><td colspan="6"><div class="empty">No hunts yet.</div></td></tr>'; return; }
+    tb.innerHTML = d.hunts.map(h=>{ const v=['confirmed','refuted','inconclusive'].includes(h.verdict)?h.verdict:'unknown';
+      return `<tr class="row-click" data-id="${esc(h.hunt_id)}" data-hyp="${esc(h.hypothesis||'')}"><td class="hyp"><span title="${esc(h.hypothesis||'')}">${esc(h.hypothesis||'')}</span></td>
+      <td><span class="vpill ${v}">${esc(h.verdict||'—')}</span></td><td class="r num">${pct(h.confidence)}</td><td class="r num">${pct(h.verification_rate)}</td>
+      <td class="r num">${h.n_verified ?? '—'}</td><td class="when">${esc(fmtTime(h.finished_at))}<small>${esc(h.hunt_id||'')}</small></td></tr>`; }).join('');
+    tb.querySelectorAll('tr.row-click').forEach(tr=>tr.addEventListener('click',()=>openReport(tr.dataset.id, tr.dataset.hyp)));
+  }catch(e){}
+}
+let modalText = '', modalId = '';
+async function openReport(id, hyp){
+  modalId = id; $('#modal-title').textContent = `${id} · ${hyp}`; $('#modal-pre').textContent = 'Loading report…'; $('#modal').hidden=false;
+  try{ modalText = await (await fetch(`/api/hunt/${encodeURIComponent(id)}/report`)).text(); $('#modal-pre').textContent = modalText; }
+  catch(e){ $('#modal-pre').textContent = 'Could not load report.'; }
+}
+$('#modal-close').onclick = ()=>$('#modal').hidden=true;
+$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') $('#modal').hidden=true; });
+$('#modal-dl').onclick = ()=>download(`${modalId}_report.md`, modalText);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('#modal').hidden=true; });
+
+/* ============================================================
+   trace log (shared by hunt + scan)
+   ============================================================ */
+function logTo(target, cls, html){
+  const t=$(target); const ts=new Date().toLocaleTimeString('en-GB');
+  const icon = {tool:IC.tool, probe:IC.probe, finding:IC.flag, verdict:IC.check, err:IC.err, thought:IC.thought}[cls] || IC.sys;
+  const d=document.createElement('div'); d.className='ev '+cls;
+  d.innerHTML=`<span class="ts">${ts}</span><span class="ic">${icon}</span><span class="msg">${html}</span>`;
+  t.appendChild(d); t.scrollTop=t.scrollHeight; return t.children.length;
+}
+
+/* ============================================================
+   HUNT
+   ============================================================ */
+let hunt = {report:'', id:'', evidence:[], calls:0, findings:0, t0:0, timer:null};
+function chips(){ const c=$('#chips'); c.innerHTML=''; EXAMPLES.forEach(e=>{ const el=document.createElement('span'); el.className='chip'; el.textContent=e; el.onclick=()=>{ $('#hyp').value=e; $('#hyp').focus(); }; c.appendChild(el); }); }
+function setTab(name){ $$('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===name)); $$('.tabpane').forEach(p=>p.hidden = p.id!=='tab-'+name); }
+$$('#tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$('#dl-report').onclick = ()=>{ if(hunt.report) download(`${hunt.id}_report.md`, hunt.report); };
+
+function huntCounters(phase, last){
+  if(phase) $('#hs-phase').textContent = phase;
+  if(last!==undefined) $('#hs-last').textContent = last;
+  $('#hs-calls').textContent = hunt.calls; $('#hs-findings').textContent = hunt.findings;
+}
+function runHunt(){
+  const hyp = $('#hyp').value.trim(); if(!hyp || $('#run-hunt').disabled) return;
+  const btn = $('#run-hunt'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>Hunting…';
+  hunt = {report:'', id:'', evidence:[], calls:0, findings:0, t0:Date.now(), timer:null};
+  $('#hunt-empty').hidden=true; $('#hunt-results').hidden=false; $('#hunt-status').hidden=false;
+  $('#verdict').hidden=true; $('#findings-card').hidden=true; $('#detail-card').hidden=false;
+  $('#trace').innerHTML=''; $('#evidence-tbody').innerHTML=''; $('#report-pre').textContent=''; $('#ev-count').textContent='0'; $('#trace-count').textContent='0';
+  setTab('trace'); huntCounters('Hunting…','connecting to hunt engine');
+  hunt.timer = setInterval(()=>{ $('#hs-elapsed').textContent = Math.round((Date.now()-hunt.t0)/1000)+'s'; }, 500);
+  const tl = (cls,html)=>{ $('#trace-count').textContent = logTo('#trace',cls,html); };
+  tl('sys','connecting to hunt engine…');
+  const es = new EventSource(`/api/hunt_stream?hypothesis=${encodeURIComponent(hyp)}&engine=llm`);
+  es.onmessage = m => {
+    let e; try{ e=JSON.parse(m.data); }catch(_){ return; }
+    switch(e.type){
+      case 'start': hunt.id=e.hunt_id; tl('sys',`hunt <b>${esc(e.hunt_id)}</b> · engine ${esc(e.engine)}`); huntCounters('Planning…',`hunt ${e.hunt_id} started`); break;
+      case 'mcp': $('#tb-mcp').textContent=e.backend; tl('tool',`MCP connected · <b>${esc(e.backend)}</b> · ${(e.tools||[]).length} tools: <span class="dim">${esc((e.tools||[]).join(', '))}</span>`); huntCounters('Planning…',`mcp ${e.backend} · ${(e.tools||[]).length} tools`); break;
+      case 'probe': tl('probe',`probe ${esc(e.name)} <span class="dim">[${esc(e.mitre)}]</span>`); huntCounters('Probing…',e.name); break;
+      case 'tool_call': hunt.calls++; tl('tool',`<b>${esc(e.tool)}</b>(${esc(shortJSON(e.arguments))})${e.evidence_id?' <span class="dim">→ '+esc(e.evidence_id)+'</span>':''}${e.summary?' · '+esc(e.summary):''}`); huntCounters('Querying…',`${e.tool} ${shortJSON(e.arguments,60)}`); break;
+      case 'tool_result': tl('tool',`<span class="dim">${esc(e.tool)} →</span> ${esc(shortJSON(e.result,160))}`); break;
+      case 'thought': if(e.text) { tl('thought',esc(String(e.text).slice(0,220))); huntCounters('Reasoning…',String(e.text).slice(0,120)); } break;
+      case 'finding': { const f=e.finding||{}; hunt.findings++; tl('finding',`<b>${esc(sevOf(f).toUpperCase())}</b> ${esc(f.mitre||'')} — ${esc(f.claim||'')}`); huntCounters('Collecting findings…',f.claim||''); break; }
+      case 'verdict': tl('verdict',`VERDICT ${esc(String(e.verdict).toUpperCase())} · confidence ${pct(e.confidence)} · integrity ${pct(e.verification_rate)}`); huntCounters('Verifying…','verdict reached · building report'); break;
+      case 'error': tl('err','error: '+esc(e.message)); huntCounters('Error',e.message); break;
+      case 'done': break;
+      default: if(e.type) tl('sys',esc(e.type)+' '+esc(shortJSON(e,120)));
+    }
+  };
+  es.addEventListener('complete', m => { try{ renderHunt(JSON.parse(m.data), hyp); }catch(err){ tl('err','render failed: '+esc(err.message)); } });
+  es.addEventListener('end', ()=>{ es.close(); huntDone(); loadOverview(); });
+  es.onerror = ()=>{ tl('err','stream closed'); es.close(); huntDone(); };
+}
+function huntDone(){ clearInterval(hunt.timer); $('#hunt-status').hidden=true; const b=$('#run-hunt'); b.disabled=false; b.innerHTML='<svg class="i" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M8 5v14l11-7z"/></svg>Run hunt'; }
+
+function renderHunt(b, hyp){
+  const r=b.result||{}, v=b.verification||{}, meta=b.meta||{}, ev=b.evidence||[];
+  hunt.report=b.report_md||''; hunt.id=meta.hunt_id||hunt.id; hunt.evidence=ev;
+  const evById={}; ev.forEach(e=>evById[e.evidence_id]=e);
+  const verdict=['confirmed','refuted','inconclusive'].includes(r.verdict)?r.verdict:'inconclusive';
+  const vc=$('#verdict'); vc.hidden=false; vc.className='verdict '+verdict;
+  $('#v-word').textContent=verdict.toUpperCase();
+  $('#v-hyp').textContent=meta.hypothesis||hyp||'';
+  $('#v-summary').textContent=r.summary||'';
+  $('#v-id').textContent=hunt.id; $('#v-engine').textContent='engine · '+(r.engine||'—'); $('#v-mcp').textContent='mcp · '+(meta.mcp_backend||'—');
+  $('#v-time').textContent=fmtTime(meta.finished_at||Date.now());
+  $('#v-conf').textContent=pct(r.confidence); $('#v-conf-bar').style.width=pct(r.confidence);
+  $('#v-integ').textContent=pct(v.verification_rate); $('#v-integ-bar').style.width=pct(v.verification_rate);
+  $('#v-queries').textContent=ev.filter(e=>e.is_query_tool).length;
+
+  // findings — verified by the guardrail
+  const vf=v.verified_findings||[], rf=v.rejected_findings||[];
+  $('#findings-card').hidden=false; $('#findings-count').textContent=`${v.n_verified ?? vf.length} of ${v.n_total ?? (vf.length+rf.length)} claims verified`;
+  const fw=$('#findings');
+  fw.innerHTML = vf.length ? [...vf].sort((a,c)=>(RANK[sevOf(a)])-(RANK[sevOf(c)])).map(f=>{
+    const sev=sevOf(f); const ids=(f.evidence_ids||[]).filter(id=>/^E\d+$/.test(id));
+    const cites=ids.map(id=>{ const e=evById[id]; const q=e?qstr(e):'';
+      return (e&&e.es_request) ? `<a class="epill" href="${esc(esLink(e))}" target="_blank" rel="noopener" title="Open ${esc(id)} in Elasticsearch${q?'\n'+esc(q):''}">${esc(id)}${IC.ext}</a>`
+                               : `<span class="epill nolink" title="${esc(e?e.tool:'evidence')}">${esc(id)}</span>`; }).join('');
+    const role = f.role==='negative' ? '<span class="tag" title="argues against the hypothesis">counter-evidence</span>' : '';
+    return `<div class="finding ${sev}"><div class="frow"><span class="sev ${sev}">${sev}</span><span class="tech"><span class="id">${esc(f.mitre||'')}</span>${f.technique?'· '+esc(f.technique):''}</span>${role}</div>
+      <div class="claim">${esc(f.claim)}</div><div class="cite"><span class="k">evidence</span>${cites||'<span class="epill nolink">none</span>'}</div></div>`; }).join('')
+    : '<div class="empty" style="grid-column:1/-1;padding:20px">No findings survived verification.</div>';
+  const rw=$('#rejected-wrap'); rw.hidden=!rf.length; rw.open=false;
+  if(rf.length){ $('#rejected-count').textContent=`${rf.length} claim${rf.length===1?'':'s'} rejected by the guardrail`;
+    $('#rejected').innerHTML=rf.map(f=>`<div class="rj"><span class="x">✕</span><span><s>${esc(f.claim)}</s><br><em>${esc(f.reject_reason||'not backed by evidence')}</em></span></div>`).join(''); }
+
+  // evidence table + report
+  $('#ev-count').textContent=ev.length;
+  $('#evidence-tbody').innerHTML = ev.length ? ev.map(e=>{ const h=e.hit_count||0; const q=qstr(e); const idx=(e.es_request||{}).index||'';
+    const body = e.is_query_tool ? `<span class="q" title="${esc(q||shortJSON(e.arguments))}">${esc(q||shortJSON(e.arguments))}</span>` : `<span class="q dim" title="${esc(e.result_summary||'')}">${esc(e.result_summary||shortJSON(e.arguments))}</span>`;
+    return `<tr id="ev-${esc(e.evidence_id)}"><td class="mono" style="color:var(--es);font-weight:500">${esc(e.evidence_id)}</td><td class="mono">${esc(e.tool)}</td><td>${body}</td>
+      <td class="mono" style="color:var(--mute)">${esc(idx)}</td><td class="r"><span class="hits ${h>0?'pos':'zero'}">${fmtN(h)}</span></td><td class="r" style="padding-right:12px">${esBtn(e)}</td></tr>`; }).join('')
+    : '<tr><td colspan="6"><div class="empty">No evidence recorded.</div></td></tr>';
+  $('#report-pre').textContent=hunt.report;
+  setTab('evidence');
+  requestAnimationFrame(()=>vc.scrollIntoView({behavior:'smooth',block:'start'}));
+}
+
+/* ============================================================
+   SCAN
+   ============================================================ */
+const SCAN_KEY='sherlock_last_scan';
+let scanRan=false, scan={probes:0, det:0, total:15};
+function scanProgress(){
+  const total=scan.total||15; $('#scan-progress').style.width=Math.min(100,scan.probes/total*100)+'%';
+  $('#scan-prog-txt').textContent=`${scan.probes} / ${total} probes`; $('#scan-prog-det').textContent=`${scan.det} detection${scan.det===1?'':'s'}`;
+}
+function scanState(kind, txt, sub){
+  const d=$('#scan-dot'); d.className='dot'; d.style.cssText=kind==='idle'?'background:var(--ghost);box-shadow:none':kind==='err'?'background:var(--crit)':'';
+  if(kind==='run') d.classList.add('live');
+  $('#scan-state-txt').textContent=txt; $('#scan-state-sub').textContent=sub||'';
+}
+function runScan(){
+  const btn=$('#run-scan'); if(btn.disabled) return; btn.disabled=true; btn.innerHTML='<span class="spin"></span>Scanning…';
+  scan={probes:0, det:0, total:scan.total||15}; scanRan=true;
+  $('#scan-log').innerHTML=''; $('#scan-log-count').textContent='0 events'; scanProgress();
+  scanState('run','Scanning','sweeping the corpus with deterministic probes');
+  const tl=(cls,html)=>{ $('#scan-log-count').textContent=logTo('#scan-log',cls,html)+' events'; };
+  tl('sys','starting deterministic scan…');
+  const es=new EventSource('/api/hunt_stream?hypothesis=scan&engine=heuristic');
+  es.onmessage=m=>{ let e; try{ e=JSON.parse(m.data); }catch(_){ return; }
+    switch(e.type){
+      case 'start': $('#scan-run-id').textContent=e.hunt_id||''; tl('sys',`run <b>${esc(e.hunt_id)}</b>`); break;
+      case 'mcp': $('#tb-mcp').textContent=e.backend; tl('tool',`MCP connected · <b>${esc(e.backend)}</b> · ${(e.tools||[]).length} tools`); break;
+      case 'tool_result': tl('tool',`<span class="dim">${esc(e.tool)} →</span> ${esc(shortJSON(e.result,140))}`); break;
+      case 'tool_call': tl('tool',`<b>${esc(e.tool)}</b>(${esc(shortJSON(e.arguments))})`); break;
+      case 'probe': scan.probes++; scanProgress(); scanState('run','Scanning',`${e.mitre} · ${e.name}`); tl('probe',`<span class="dim">[${esc(e.mitre)}]</span> ${esc(e.name)}`); break;
+      case 'finding': { const f=e.finding||{}; if(f.role!=='negative'){ scan.det++; scanProgress(); tl('finding',`<b>${esc(sevOf(f).toUpperCase())}</b> ${esc(f.mitre||'')} — ${esc(f.claim||'')}`); } break; }
+      case 'verdict': tl('verdict',`scan complete · ${esc(String(e.verdict).toUpperCase())}`); break;
+      case 'error': tl('err','error: '+esc(e.message)); scanState('err','Error',e.message); break;
+    }
+  };
+  es.addEventListener('complete',m=>{ try{ const b=JSON.parse(m.data); renderScan(b); cacheScan(b); }catch(err){ tl('err','render failed: '+esc(err.message)); } });
+  es.addEventListener('end',()=>{ es.close(); scanDone(); loadOverview(); });
+  es.onerror=()=>{ tl('err','stream closed'); es.close(); scanDone(); };
+}
+function scanDone(){ const b=$('#run-scan'); b.disabled=false; b.innerHTML='<svg class="i" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M8 5v14l11-7z"/></svg>Run scan'; if($('#scan-state-txt').textContent==='Scanning') scanState('ok','Complete','posture updated'); }
+
+function renderScan(b, when){
+  const r=b.result||{}, cov=r.coverage||{}, ev=b.evidence||[], meta=b.meta||{};
+  const evById={}; ev.forEach(e=>evById[e.evidence_id]=e);
+  const positives=(r.findings||[]).filter(f=>f.role!=='negative');
+  const probed=cov.probes_run||(cov.techniques_probed||[]).length||positives.length; scan.total=probed||15;
+  const groups={}; positives.forEach(f=>{ const t=TACTIC[f.mitre]||'Other'; (groups[t]=groups[t]||[]).push(f); });
+  const tactics=TACTIC_ORDER.filter(t=>groups[t]); if(groups.Other) tactics.push('Other');
+  const ts=when||meta.finished_at||new Date().toISOString();
+  const nq=ev.filter(e=>e.is_query_tool).length;
+
+  $('#k-rules').textContent=probed;
+  $('#k-det').innerHTML=`${positives.length}<small id="k-det-of">/ ${probed}</small>`; $('#k-det-bar').style.width=(probed?positives.length/probed*100:0)+'%';
+  $('#k-tac').innerHTML=`${tactics.filter(t=>t!=='Other').length}<small>/ ${TACTIC_ORDER.length}</small>`;
+  $('#k-tac-dots').innerHTML=TACTIC_ORDER.map(t=>`<i class="${groups[t]?'on':''}" title="${esc(t)}"></i>`).join('');
+  $('#k-when').textContent=timeAgo(ts)||'just now'; $('#k-when-sub').textContent=fmtTime(ts)+(meta.hunt_id?' · '+meta.hunt_id:'');
+  $('#scan-sub').innerHTML=`<span class="k">last run</span><b>${esc(timeAgo(ts)||'just now')}</b>`;
+  $('#scan-run-id').textContent=meta.hunt_id||'';
+  $('#board-meta').textContent=`${positives.length} techniques · ${nq} queries`;
+  const tw=cov.time_window||{}; $('#scan-window').textContent=tw.earliest?`corpus ${esc(cov.corpus||'')} · ${String(tw.earliest).slice(0,10)} → ${String(tw.latest).slice(0,10)}`:(cov.corpus||'');
+  scan.probes=probed; scan.det=positives.length; scanProgress();
+  if(!scanRan) scanState('ok','Last result','restored from this browser · press Run scan to refresh');
+
+  // coverage board — every tactic column always present
+  const cols=[...TACTIC_ORDER, ...(groups.Other?['Other']:[])];
+  $('#board').innerHTML=cols.map(t=>{ const list=(groups[t]||[]).sort((a,c)=>RANK[sevOf(a)]-RANK[sevOf(c)]);
+    const chips=list.map(f=>{ const sev=sevOf(f); const e=(f.evidence_ids||[]).map(id=>evById[id]).find(Boolean); const cnt=e?(e.hit_count||0):null;
+      const nm=String(f.technique||'').split(':').pop().trim()||f.technique||'';
+      return `<div class="tchip ${sev}" title="${esc(f.claim||'')}"><div class="r1"><span class="id">${esc(f.mitre)}</span>${esBtn(e,'sm')}</div><div class="nm">${esc(nm)}</div><div class="ct">${cnt===null?'—':'<b>'+fmtN(cnt)+'</b> event'+(cnt===1?'':'s')} · ${sev}</div></div>`; }).join('');
+    return `<div class="tactic"><h4><span>${esc(t)}</span><span class="n ${list.length?'':'zero'}">${list.length}</span></h4>${chips||'<div class="none">no detections</div>'}</div>`; }).join('');
+
+  // recent detections — severity order
+  const top=[...positives].sort((a,c)=>(RANK[sevOf(a)]-RANK[sevOf(c)])||((evById[(c.evidence_ids||[])[0]]||{}).hit_count||0)-((evById[(a.evidence_ids||[])[0]]||{}).hit_count||0));
+  $('#recent-meta').textContent=positives.length;
+  $('#recent').innerHTML=top.length?top.map(f=>{ const sev=sevOf(f); const e=(f.evidence_ids||[]).map(id=>evById[id]).find(Boolean); const cnt=e?(e.hit_count||0):null;
+    return `<div class="drow"><span class="sev ${sev}">${sev}</span><div class="t"><div class="claim" title="${esc(f.claim)}">${esc(f.claim)}</div><div class="sub"><span class="id">${esc(f.mitre)}</span><span>${esc(f.technique||'')}</span><span>· ${esc(TACTIC[f.mitre]||'')}</span></div></div>
+      <div class="right"><span class="ct">${cnt===null?'':fmtN(cnt)+' event'+(cnt===1?'':'s')}</span>${esBtn(e)}</div></div>`; }).join('')
+    : '<div class="empty">No detections.</div>';
+}
+function cacheScan(b){ try{ localStorage.setItem(SCAN_KEY, JSON.stringify({when:new Date().toISOString(), result:b.result, evidence:b.evidence, meta:b.meta})); }catch(_){} }
+function loadScanCache(){ try{ const raw=localStorage.getItem(SCAN_KEY); if(!raw) return renderScanEmpty(); const c=JSON.parse(raw); renderScan({result:c.result, evidence:c.evidence, meta:c.meta}, c.when); }catch(_){ renderScanEmpty(); } }
+function renderScanEmpty(){
+  $('#k-tac-dots').innerHTML=TACTIC_ORDER.map(t=>`<i title="${esc(t)}"></i>`).join('');
+  $('#board').innerHTML=TACTIC_ORDER.map(t=>`<div class="tactic"><h4><span>${esc(t)}</span><span class="n zero">0</span></h4><div class="none">not scanned</div></div>`).join('');
+  $('#recent').innerHTML='<div class="empty"><svg class="i" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/></svg><div>No scan yet.</div><small>Run a scan to build the ATT&amp;CK coverage board.</small></div>';
+}
+
+/* ============================================================
+   wiring
+   ============================================================ */
+$('#run-hunt').onclick=runHunt;
+$('#run-scan').onclick=runScan;
+$('#hyp').addEventListener('keydown',e=>{ if(e.key==='Enter') runHunt(); });
+document.addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){ if(!$('#view-scan').hidden) runScan(); else if(!$('#view-hunt').hidden) runHunt(); } });
+chips(); renderScanEmpty(); loadOverview(); setInterval(loadOverview,20000);
+showView((location.hash||'#hunt').slice(1));
+</script>
+</body>
+</html>

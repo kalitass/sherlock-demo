@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "A · Dossier", "x": 0, "y": 0, "w": 1480, "h": 1020 },
+    { "file": "Terminal.dc.html", "title": "B · Terminal", "x": 1600, "y": 0, "w": 1480, "h": 1020 },
+    { "file": "Elevated.dc.html", "title": "C · Elevated", "x": 3200, "y": 0, "w": 1480, "h": 1020 }
+  ],
+  "annotations": [
+    { "id": "note-a", "x": 0, "y": -150, "w": 460, "text": "A · DOSSIER — editorial / investigative.\nSherlock as a case file: serif masthead, warm paper, verdict as a stamp, findings as numbered 'exhibits'. Most distinctive and ownable; least like a generic SOC dashboard." },
+    { "id": "note-b", "x": 1600, "y": -150, "w": 460, "text": "B · TERMINAL — command deck.\nRefined hacker aesthetic: monospace, near-black, one electric accent, live command prompt + streaming trace. High-density, precise, feels fast and technical." },
+    { "id": "note-c", "x": 3200, "y": -150, "w": 460, "text": "C · ELEVATED — modern SaaS (light).\nThe Linear/Vanta lane, properly polished: sidebar, soft shadows, generous whitespace, Space Grotesk + one confident accent. Safest, most familiar to buyers." }
+  ],
+  "launch": { "view": "canvas" }
+}
