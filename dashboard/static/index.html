@@ -50,37 +50,6 @@
   --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px -16px rgba(16,24,40,.16);
 }
 
-/* ---- Slate: deep navy / blue-grey, softer than graphite ---- */
-:root[data-theme="slate"]{
-  color-scheme:dark;
-  --bg:#0e1526; --s1:#151d31; --s2:#1a2439; --s3:#212c44; --s4:#293654;
-  --line:#273452; --line2:#202b46; --line-hi:#374868;
-  --ink:#e7edf8; --ink2:#b5c1d7; --mute:#8292ad; --ghost:#586685;
-  --acc:#6fa9ff; --acc-deep:#3b7ae0; --acc-soft:rgba(111,169,255,.13); --acc-line:rgba(111,169,255,.38); --acc-glow:rgba(111,169,255,.6); --on-acc:#07111f;
-  --es:#3ad8c0; --es-soft:rgba(58,216,192,.13); --es-line:rgba(58,216,192,.38); --es-hover:rgba(58,216,192,.24); --es-glow:rgba(58,216,192,.8); --on-es:#06201b;
-  --crit:#ff6b79; --high:#ffa24f; --med:#f5d062; --low:#95a3bb; --ok:#4ad98d; --info:#b49cff;
-  --crit-soft:rgba(255,107,121,.15); --high-soft:rgba(255,162,79,.15); --med-soft:rgba(245,208,98,.15); --low-soft:rgba(149,163,187,.16); --ok-soft:rgba(74,217,141,.15);
-  --ok-ring:rgba(74,217,141,.16); --ok-ring-wide:rgba(74,217,141,.05); --crit-ring:rgba(255,107,121,.16);
-  --sel:rgba(111,169,255,.3); --scroll:#2c3a58; --row-hover:rgba(255,255,255,.02);
-  --topbar:rgba(14,21,38,.82); --scrim:rgba(8,12,24,.7); --modal-shadow:0 30px 80px -20px rgba(0,0,0,.8);
-  --shadow:0 1px 0 rgba(255,255,255,.025) inset, 0 8px 24px -16px rgba(0,0,0,.65);
-}
-
-/* ---- Indigo: warm violet midnight ---- */
-:root[data-theme="indigo"]{
-  color-scheme:dark;
-  --bg:#0e0c1c; --s1:#151229; --s2:#1b1733; --s3:#221d40; --s4:#2b254e;
-  --line:#2a2449; --line2:#221d3e; --line-hi:#3c3465;
-  --ink:#ece9f7; --ink2:#bdb6d6; --mute:#8a82ab; --ghost:#5b5380;
-  --acc:#9a8cff; --acc-deep:#6b5ce6; --acc-soft:rgba(154,140,255,.13); --acc-line:rgba(154,140,255,.38); --acc-glow:rgba(154,140,255,.6); --on-acc:#0e0b22;
-  --es:#38dcc6; --es-soft:rgba(56,220,198,.13); --es-line:rgba(56,220,198,.38); --es-hover:rgba(56,220,198,.24); --es-glow:rgba(56,220,198,.8); --on-es:#06201b;
-  --crit:#ff6882; --high:#ffa15c; --med:#f7d05e; --low:#9d97b8; --ok:#4fdc9c; --info:#e79cff;
-  --crit-soft:rgba(255,104,130,.15); --high-soft:rgba(255,161,92,.15); --med-soft:rgba(247,208,94,.15); --low-soft:rgba(157,151,184,.16); --ok-soft:rgba(79,220,156,.15);
-  --ok-ring:rgba(79,220,156,.16); --ok-ring-wide:rgba(79,220,156,.05); --crit-ring:rgba(255,104,130,.16);
-  --sel:rgba(154,140,255,.3); --scroll:#2f2852; --row-hover:rgba(255,255,255,.02);
-  --topbar:rgba(14,12,28,.82); --scrim:rgba(8,6,20,.7); --modal-shadow:0 30px 80px -20px rgba(0,0,0,.8);
-  --shadow:0 1px 0 rgba(255,255,255,.025) inset, 0 8px 24px -16px rgba(0,0,0,.7);
-}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -99,8 +68,8 @@ svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 .app{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}
 .sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--s1);border-right:1px solid var(--line);padding:18px 14px 14px}
 .brand{display:flex;align-items:center;gap:11px;padding:4px 8px 22px}
-.brand .mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--acc),var(--acc-deep));display:grid;place-items:center;flex:none;box-shadow:0 4px 14px -4px var(--acc-glow)}
-.brand .mark svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.brand .mark{width:32px;height:32px;border-radius:9px;background:#13227a;display:grid;place-items:center;flex:none}
+.brand .mark svg{width:20px;height:20px;fill:#fff;stroke:none}
 .brand .name{font-weight:700;font-size:15.5px;letter-spacing:-.01em;line-height:1.15}
 .brand .name small{display:block;color:var(--mute);font-weight:500;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
 .nav{display:flex;flex-direction:column;gap:2px}
@@ -131,8 +100,6 @@ svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 .theme-sw .sw{width:11px;height:11px;border-radius:99px;flex:none;box-shadow:inset 0 0 0 1px rgba(127,127,127,.35)}
 .theme-sw .sw.graphite{background:linear-gradient(135deg,#10141b 50%,#5aa2ff 50%)}
 .theme-sw .sw.light{background:linear-gradient(135deg,#ffffff 50%,#2563eb 50%)}
-.theme-sw .sw.slate{background:linear-gradient(135deg,#151d31 50%,#6fa9ff 50%)}
-.theme-sw .sw.indigo{background:linear-gradient(135deg,#151229 50%,#9a8cff 50%)}
 .crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);white-space:nowrap}
 .crumb b{color:var(--ink);font-weight:600}
 .crumb .sep{color:var(--ghost)}
@@ -140,6 +107,9 @@ svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 .pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:12px;color:var(--ink2);background:var(--s2);white-space:nowrap}
 .pill .k{color:var(--mute)}
 .pill b{font-weight:600;color:var(--ink)}
+.led{width:8px;height:8px;border-radius:50%;background:var(--ghost);flex:none;transition:background .2s,box-shadow .2s}
+.led.ok{background:var(--ok);box-shadow:0 0 0 3px var(--ok-ring)}
+.led.bad{background:var(--crit);box-shadow:0 0 0 3px var(--crit-ring)}
 .mobile-nav{display:none}
 
 .content{padding:28px;max-width:1320px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:20px}
@@ -153,6 +123,9 @@ svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 /* ---------- primitives ---------- */
 .card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);min-width:0;overflow:hidden}
 .tblwrap{overflow-x:auto}
+/* Sources page: cap both tables so a long registry can't tower over the shorter
+   sources table and leave a wall of dead space beside it. */
+#view-sources .grid-2 .tblwrap{max-height:540px;overflow:auto}
 table.fixed{table-layout:fixed}
 .card-hd{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line2);min-height:48px}
 .card-hd h3{font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:.01em;display:flex;align-items:center;gap:8px}
@@ -330,7 +303,23 @@ tr.flash td{background:var(--es-soft) !important;transition:background .2s}
 .ev.sys .msg{color:var(--mute)}
 .ev.thought .ic{color:var(--info)}
 .ev.thought .msg{color:var(--mute);font-style:italic}
-pre.report{font-family:var(--mono);font-size:12px;line-height:1.65;color:var(--ink2);white-space:pre-wrap;word-break:break-word;max-height:560px;overflow:auto;padding:16px 18px}
+.report{font-size:13px;line-height:1.6;color:var(--ink2);max-height:560px;overflow:auto;padding:2px 20px 20px}
+.report.md h1{font-size:19px;color:var(--ink);margin:16px 0 10px;font-weight:650}
+.report.md h2{font-size:15px;color:var(--ink);margin:22px 0 8px;font-weight:600;padding-bottom:5px;border-bottom:1px solid var(--line2)}
+.report.md h3{font-size:13.5px;color:var(--ink);margin:16px 0 6px;font-weight:600}
+.report.md p{margin:8px 0}.report.md ul{margin:8px 0;padding-left:20px}.report.md li{margin:3px 0}
+.report.md strong{color:var(--ink);font-weight:600}.report.md em{font-style:italic;color:var(--mute)}.report.md del{color:var(--mute)}
+.report.md code{font-family:var(--mono);font-size:11.5px;background:var(--s3);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.report.md blockquote{margin:12px 0;padding:10px 14px;border-left:3px solid var(--acc);background:var(--s2);border-radius:0 8px 8px 0;font-size:13px}
+.report.md blockquote code{background:var(--s1)}
+.report.md table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px}
+.report.md th,.report.md td{border:1px solid var(--line2);padding:6px 9px;text-align:left;vertical-align:top}
+.report.md th{background:var(--s2);color:var(--ink);font-weight:600}.report.md td{color:var(--ink2);word-break:break-word}
+.report.md pre.cb{background:var(--s3);border:1px solid var(--line2);border-radius:8px;padding:11px 13px;overflow:auto;margin:8px 0;max-height:300px}
+.report.md pre.cb code{background:none;padding:0;font-size:11px;line-height:1.5;white-space:pre;color:var(--ink2)}
+.report.md details{margin:10px 0;border:1px solid var(--line2);border-radius:8px;padding:6px 12px;background:var(--s1)}
+.report.md summary{cursor:pointer;font-size:12.5px;color:var(--ink2);user-select:none}
+.report.md details[open] summary{margin-bottom:8px;color:var(--ink)}
 
 /* ---------- scan page ---------- */
 .scan-grid{display:grid;grid-template-columns:3fr 2fr;gap:20px;align-items:start}
@@ -387,12 +376,16 @@ pre.report{font-family:var(--mono);font-size:12px;line-height:1.65;color:var(--i
 
 /* ---------- history ---------- */
 tr.row-click{cursor:pointer}
-td.hyp span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.hyp span{display:flex;align-items:center;gap:9px;overflow:hidden;white-space:nowrap}
+td.hyp .lbl{overflow:hidden;text-overflow:ellipsis}
+.ti{width:15px;height:15px;flex:none;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ti.scan{stroke:var(--es)}
+.ti.hunt{stroke:var(--acc)}
 td.when{color:var(--mute);white-space:nowrap}
 td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--ghost)}
 .modal{position:fixed;inset:0;z-index:50;background:var(--scrim);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px}
 .modal .box{width:min(960px,100%);max-height:88vh;display:flex;flex-direction:column;background:var(--s1);border:1px solid var(--line-hi);border-radius:12px;box-shadow:var(--modal-shadow);overflow:hidden}
-.modal .box pre.report{max-height:none;flex:1}
+.modal .box .report{max-height:none;flex:1}
 
 /* ---------- responsive ---------- */
 @media(max-width:1180px){.board{grid-template-columns:repeat(4,1fr)}.findings{grid-template-columns:1fr}.verdict .inner{grid-template-columns:1fr}.vm{justify-self:start}.theme-sw button .lb{display:none}.theme-sw button{padding:0 6px}}
@@ -410,7 +403,7 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
 </style>
 <script>
 /* apply the persisted theme before first paint so there is no flash of the default palette */
-(function(){ try{ var t=localStorage.getItem('sherlock_theme'); if(t&&t!=='graphite') document.documentElement.dataset.theme=t; }catch(_){} })();
+(function(){ try{ var t=localStorage.getItem('sherlock_theme'); if(t==='light') document.documentElement.dataset.theme=t; }catch(_){} })();
 </script>
 </head>
 <body>
@@ -418,7 +411,9 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
   <!-- ======================= sidebar ======================= -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="mark"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/><path d="M8 10.5h5M10.5 8v5"/></svg></div>
+      <div class="mark"><svg viewBox="0 0 1024 1024" aria-label="Sherlock"><!-- shield-check (user asset) -->
+        <path fill-rule="evenodd" d="M848.350514 526.162558c2.260483-21.251 0-345.994152 0-345.994152-251.347538 10.864442-323.371922-94.27413-323.371922-94.27413-69.287039 100.757798-322.793754 94.187149-322.793754 94.187149s-6.571672 131.423215 0 370.176924c6.571672 238.752686 323.083349 313.225841 323.083349 313.225841C863.135242 764.367775 845.612147 551.899732 848.350514 526.162558zM495.697709 624.729457 335.797929 478.996328l41.617863-33.878598 86.520539 65.711608c0 0 117.185956-124.852566 233.276974-181.802626l17.523095 19.713994C714.736401 348.740706 561.409316 475.783147 495.697709 624.729457z"/>
+      </svg></div>
       <div class="name">Sherlock<small>Agentic threat hunting</small></div>
     </div>
     <nav class="nav" id="nav">
@@ -444,12 +439,11 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
       <div class="sp"></div>
       <span class="pill hide-sm"><span class="k">events</span><b id="tb-events" class="num">—</b></span>
       <span class="pill hide-sm"><span class="k">sources</span><b id="tb-sources" class="num">—</b></span>
-      <span class="pill"><span class="k">mcp</span><b id="tb-mcp">—</b></span>
+      <span class="pill" id="pill-llm" title="LLM provider"><span class="led" id="led-llm"></span><span class="k">LLM</span><b id="tb-llm">—</b></span>
+      <span class="pill hide-sm"><span class="k">mcp</span><b id="tb-mcp">—</b></span>
       <div class="theme-sw" id="theme-sw" role="radiogroup" aria-label="Colour theme" title="Colour theme">
         <button type="button" role="radio" data-theme="graphite" aria-checked="true"><span class="sw graphite"></span><span class="lb">Graphite</span></button>
         <button type="button" role="radio" data-theme="light" aria-checked="false"><span class="sw light"></span><span class="lb">Light</span></button>
-        <button type="button" role="radio" data-theme="slate" aria-checked="false"><span class="sw slate"></span><span class="lb">Slate</span></button>
-        <button type="button" role="radio" data-theme="indigo" aria-checked="false"><span class="sw indigo"></span><span class="lb">Indigo</span></button>
       </div>
     </div>
     <nav class="mobile-nav" id="mobile-nav">
@@ -509,7 +503,7 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
         </div>
 
         <div class="card" id="findings-card" hidden>
-          <div class="card-hd"><h3>Verified findings <span class="cnt" id="findings-count"></span></h3><div class="meta">Each finding cites the evidence that produced it · click a citation to open the documents in Elasticsearch</div></div>
+          <div class="card-hd"><h3>Verified findings <span class="cnt" id="findings-count"></span></h3><div class="meta">Each finding cites the evidence that produced it · click a citation to open the documents in Kibana</div></div>
           <div class="card-bd">
             <div class="findings" id="findings"></div>
             <details class="rejected" id="rejected-wrap" hidden>
@@ -532,7 +526,7 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
             <table><thead><tr><th>ID</th><th>Tool</th><th>Query / result</th><th>Index</th><th class="r">Hits</th><th></th></tr></thead><tbody id="evidence-tbody"></tbody></table>
           </div>
           <div class="tabpane" id="tab-trace" hidden><div class="trace" id="trace"></div></div>
-          <div class="tabpane" id="tab-report" hidden><pre class="report" id="report-pre"></pre></div>
+          <div class="tabpane" id="tab-report" hidden><div class="report md" id="report-pre"></div></div>
         </div>
       </div>
 
@@ -562,7 +556,7 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
       <div class="kpis">
         <div class="kpi"><div class="top">Detection rules<svg class="i" viewBox="0 0 24 24"><path d="M14.6 6.3a1 1 0 0 0 0 1.4l1.7 1.7a1 1 0 0 0 1.4 0l3.6-3.6a6 6 0 0 1-7.9 7.9l-6.8 6.8a2.1 2.1 0 0 1-3-3l6.8-6.8a6 6 0 0 1 7.9-7.9z"/></svg></div><div class="val" id="k-rules">15</div><div class="sub">ATT&amp;CK probes · <b>deterministic</b></div></div>
         <div class="kpi es"><div class="top">Techniques detected<svg class="i" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="val" id="k-det">—<small id="k-det-of"></small></div><div class="bar es"><i id="k-det-bar" style="width:0"></i></div></div>
-        <div class="kpi"><div class="top">Tactics covered<svg class="i" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></div><div class="val" id="k-tac">—<small>/ 7</small></div><div class="dots" id="k-tac-dots"></div></div>
+        <div class="kpi"><div class="top">Tactics covered<svg class="i" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></div><div class="val" id="k-tac">—</div><div class="dots" id="k-tac-dots"></div></div>
         <div class="kpi"><div class="top">Last run<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="val" id="k-when" style="font-size:22px">never</div><div class="sub" id="k-when-sub">No scan recorded on this browser</div></div>
       </div>
 
@@ -643,7 +637,7 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
 <div class="modal" id="modal" hidden>
   <div class="box">
     <div class="card-hd"><h3 id="modal-title">Report</h3><div class="meta"><button class="btn sm ghost" id="modal-dl"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg>Download .md</button><button class="btn sm" id="modal-close">Close</button></div></div>
-    <pre class="report" id="modal-pre"></pre>
+    <div class="report md" id="modal-pre"></div>
   </div>
 </div>
 
@@ -654,6 +648,36 @@ td.when small{display:block;font-family:var(--mono);font-size:11px;color:var(--g
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* minimal, CSP-safe Markdown → HTML (no external lib). Covers exactly what the
+   report emits: headings, blockquotes, GFM tables, bullet lists, fenced code,
+   bold/italic/strike/inline-code, and raw <details>/<summary> passthrough. */
+function mdInline(s){ s = esc(s);
+  s = s.replace(/`([^`]+)`/g, (m,c)=>`<code>${c}</code>`);
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  return s; }
+function mdToHtml(src){
+  const L = String(src||'').replace(/\r/g,'').split('\n'); const out=[]; let i=0;
+  const cells = r => r.replace(/^\|/,'').replace(/\|$/,'').split('|').map(c=>c.trim());
+  while(i<L.length){ const t=L[i].trim();
+    if(/^<\/?(details|summary)/i.test(t)){ out.push(L[i]); i++; continue; }
+    if(/^```/.test(t)){ i++; const c=[]; while(i<L.length && !L[i].trim().startsWith('```')){ c.push(L[i].replace(/^ {0,2}/,'')); i++; } i++;
+      out.push(`<pre class="cb"><code>${esc(c.join('\n'))}</code></pre>`); continue; }
+    const h=t.match(/^(#{1,4})\s+(.*)$/); if(h){ const lv=h[1].length; out.push(`<h${lv}>${mdInline(h[2])}</h${lv}>`); i++; continue; }
+    if(t.startsWith('>')){ const bq=[]; while(i<L.length && L[i].trim().startsWith('>')){ bq.push(L[i].trim().replace(/^>\s?/,'')); i++; }
+      out.push(`<blockquote>${bq.map(b=>b?mdInline(b):'<br>').join(' ')}</blockquote>`); continue; }
+    if(t.startsWith('|') && i+1<L.length && /^\|[\s:|-]+\|?$/.test(L[i+1].trim())){
+      const hc=cells(t); i+=2; const rows=[]; while(i<L.length && L[i].trim().startsWith('|')){ rows.push(L[i].trim()); i++; }
+      out.push(`<table><thead><tr>${hc.map(c=>`<th>${mdInline(c)}</th>`).join('')}</tr></thead><tbody>`
+        + rows.map(r=>`<tr>${cells(r).map(c=>`<td>${mdInline(c)}</td>`).join('')}</tr>`).join('') + `</tbody></table>`); continue; }
+    if(/^[-*]\s+/.test(t)){ const it=[]; while(i<L.length && /^[-*]\s+/.test(L[i].trim())){ it.push(L[i].trim().replace(/^[-*]\s+/,'')); i++; }
+      out.push(`<ul>${it.map(x=>`<li>${mdInline(x)}</li>`).join('')}</ul>`); continue; }
+    if(!t){ i++; continue; }
+    const p=[]; while(i<L.length && L[i].trim() && !/^(#{1,4}\s|>|\||```|[-*]\s|<\/?(details|summary))/.test(L[i].trim())){ p.push(L[i].trim()); i++; }
+    out.push(`<p>${mdInline(p.join(' '))}</p>`);
+  }
+  return out.join('\n'); }
 const pct = x => Math.round((Number(x) || 0) * 100) + '%';
 const fmtN = n => (Number(n) || 0).toLocaleString();
 const SEVS = ['critical','high','medium','low'];
@@ -680,11 +704,21 @@ const IC = {
 /* ES deep-link: lucene query out of es_request.body.query.bool.must[].query_string.query */
 function qstr(e){ try{ const must=((((e.es_request||{}).body||{}).query||{}).bool||{}).must||[];
   for(const m of must){ if(m && m.query_string && m.query_string.query) return m.query_string.query; } }catch(_){} return ''; }
-function esLink(e){ const req=(e&&e.es_request)||{}; const index=req.index||'sherlock-logs-*'; const q=qstr(e);
-  const base=`http://localhost:9200/${index}/_search?size=25`;
+let KB=null;  // {url, data_view_id} from /api/overview — enables Kibana Discover deep-links
+function esLink(e){ const req=(e&&e.es_request)||{}; const index=req.index||''; let q=qstr(e);
+  // scope a concrete index into the query (the data view spans sherlock-logs-*)
+  if(index && !index.endsWith('*') && index!=='sherlock-logs-*') q = q?`(${q}) AND _index:"${index}"`:`_index:"${index}"`;
+  if(KB && KB.data_view_id){
+    // Kibana Discover app-state is rison, URI-encoded; wide time window so 2020–22 telemetry shows.
+    const g=`(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-10y,to:now))`;
+    const qv=String(q).replace(/!/g,'!!').replace(/'/g,"!'");
+    const a=`(columns:!(),filters:!(),index:'${KB.data_view_id}',interval:auto,query:(language:lucene,query:'${qv}'),sort:!())`;
+    return `${KB.url}/app/discover#/?_g=${encodeURIComponent(g)}&_a=${encodeURIComponent(a)}`;
+  }
+  const idx=index||'sherlock-logs-*'; const base=`http://localhost:9200/${idx}/_search?size=25`;
   return q?`${base}&q=${encodeURIComponent(q)}&default_operator=AND`:base; }
 function esBtn(e, cls=''){ if(!e || !e.es_request) return `<span class="ibtn disabled ${cls}" title="no ES query for this step">${IC.ext}</span>`;
-  const q=qstr(e); return `<a class="ibtn ${cls}" href="${esc(esLink(e))}" target="_blank" rel="noopener" title="Open matching documents in Elasticsearch${q?'\n'+esc(q):''}">${IC.ext}</a>`; }
+  const q=qstr(e); return `<a class="ibtn ${cls}" href="${esc(esLink(e))}" target="_blank" rel="noopener" title="Open matching documents (Kibana Discover)${q?'\n'+esc(q):''}">${IC.ext}</a>`; }
 
 /* ATT&CK technique → tactic */
 const TACTIC = {
@@ -727,7 +761,7 @@ window.addEventListener('hashchange',()=>showView(location.hash.slice(1)));
 /* ============================================================
    theme switcher — tokens only; persisted in localStorage
    ============================================================ */
-const THEME_KEY='sherlock_theme', THEMES=['graphite','light','slate','indigo'];
+const THEME_KEY='sherlock_theme', THEMES=['graphite','light'];
 function setTheme(t, persist=true){
   if(!THEMES.includes(t)) t='graphite';
   document.documentElement.dataset.theme=t;
@@ -744,9 +778,21 @@ $('#theme-sw').addEventListener('keydown',e=>{ if(e.key!=='ArrowLeft'&&e.key!=='
    overview / cluster
    ============================================================ */
 let overview = null;
+function setLed(sel, ok){ const e=$(sel); if(e) e.className='led '+(ok?'ok':'bad'); }
+async function loadHealth(){
+  try{
+    const h = await (await fetch('/api/health')).json();
+    setLed('#led-llm', h.llm_ok);
+    $('#tb-llm').textContent = h.llm_ok ? (h.llm_provider || 'on') : 'off';
+    $('#pill-llm').title = h.llm_ok
+      ? `LLM provider: ${h.llm_provider}${h.llm_model ? ' · '+h.llm_model : ''} — key configured`
+      : 'No LLM key configured — set a provider + *_API_KEY in .env (deterministic scan still works without one)';
+  }catch(_){ setLed('#led-llm', false); $('#tb-llm').textContent='?'; }
+}
 async function loadOverview(){
   try{
     const d = await (await fetch('/api/overview')).json(); overview = d;
+    if(d.kibana && d.kibana.data_view_id) KB = d.kibana;
     $('#tb-events').textContent = fmtN(d.total_events);
     $('#tb-sources').textContent = d.log_types.length;
     $('#o-events').textContent = fmtN(d.total_events);
@@ -782,7 +828,12 @@ async function loadHunts(){
     const tb = $('#hunts-tbody'); $('#hunts-count').textContent = d.hunts.length;
     if(!d.hunts.length){ tb.innerHTML='<tr><td colspan="6"><div class="empty">No hunts yet.</div></td></tr>'; return; }
     tb.innerHTML = d.hunts.map(h=>{ const v=['confirmed','refuted','inconclusive'].includes(h.verdict)?h.verdict:'unknown';
-      return `<tr class="row-click" data-id="${esc(h.hunt_id)}" data-hyp="${esc(h.hypothesis||'')}"><td class="hyp"><span title="${esc(h.hypothesis||'')}">${esc(h.hypothesis||'')}</span></td>
+      const isScan=(h.hypothesis||'').trim().toLowerCase()==='scan';
+      const ti=isScan
+        ? '<svg class="ti scan" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>'
+        : '<svg class="ti hunt" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>';
+      const label=isScan?'Detection scan':(h.hypothesis||'');
+      return `<tr class="row-click" data-id="${esc(h.hunt_id)}" data-hyp="${esc(h.hypothesis||'')}"><td class="hyp"><span title="${esc(isScan?'Deterministic detection scan · 15 ATT&CK probes':h.hypothesis||'')}">${ti}<span class="lbl">${esc(label)}</span></span></td>
       <td><span class="vpill ${v}">${esc(h.verdict||'—')}</span></td><td class="r num">${pct(h.confidence)}</td><td class="r num">${pct(h.verification_rate)}</td>
       <td class="r num">${h.n_verified ?? '—'}</td><td class="when">${esc(fmtTime(h.finished_at))}<small>${esc(h.hunt_id||'')}</small></td></tr>`; }).join('');
     tb.querySelectorAll('tr.row-click').forEach(tr=>tr.addEventListener('click',()=>openReport(tr.dataset.id, tr.dataset.hyp)));
@@ -790,9 +841,9 @@ async function loadHunts(){
 }
 let modalText = '', modalId = '';
 async function openReport(id, hyp){
-  modalId = id; $('#modal-title').textContent = `${id} · ${hyp}`; $('#modal-pre').textContent = 'Loading report…'; $('#modal').hidden=false;
-  try{ modalText = await (await fetch(`/api/hunt/${encodeURIComponent(id)}/report`)).text(); $('#modal-pre').textContent = modalText; }
-  catch(e){ $('#modal-pre').textContent = 'Could not load report.'; }
+  modalId = id; $('#modal-title').textContent = `${id} · ${hyp}`; $('#modal-pre').innerHTML = '<p>Loading report…</p>'; $('#modal').hidden=false;
+  try{ modalText = await (await fetch(`/api/hunt/${encodeURIComponent(id)}/report`)).text(); $('#modal-pre').innerHTML = mdToHtml(modalText); }
+  catch(e){ $('#modal-pre').innerHTML = '<p>Could not load report.</p>'; }
 }
 $('#modal-close').onclick = ()=>$('#modal').hidden=true;
 $('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') $('#modal').hidden=true; });
@@ -830,7 +881,7 @@ function runHunt(){
   hunt = {report:'', id:'', evidence:[], calls:0, findings:0, t0:Date.now(), timer:null};
   $('#hunt-empty').hidden=true; $('#hunt-results').hidden=false; $('#hunt-status').hidden=false;
   $('#verdict').hidden=true; $('#findings-card').hidden=true; $('#detail-card').hidden=false;
-  $('#trace').innerHTML=''; $('#evidence-tbody').innerHTML=''; $('#report-pre').textContent=''; $('#ev-count').textContent='0'; $('#trace-count').textContent='0';
+  $('#trace').innerHTML=''; $('#evidence-tbody').innerHTML=''; $('#report-pre').innerHTML=''; $('#ev-count').textContent='0'; $('#trace-count').textContent='0';
   setTab('trace'); huntCounters('Hunting…','connecting to hunt engine');
   hunt.timer = setInterval(()=>{ $('#hs-elapsed').textContent = Math.round((Date.now()-hunt.t0)/1000)+'s'; }, 500);
   const tl = (cls,html)=>{ $('#trace-count').textContent = logTo('#trace',cls,html); };
@@ -880,7 +931,7 @@ function renderHunt(b, hyp){
   fw.innerHTML = vf.length ? [...vf].sort((a,c)=>(RANK[sevOf(a)])-(RANK[sevOf(c)])).map(f=>{
     const sev=sevOf(f); const ids=(f.evidence_ids||[]).filter(id=>/^E\d+$/.test(id));
     const cites=ids.map(id=>{ const e=evById[id]; const q=e?qstr(e):'';
-      return (e&&e.es_request) ? `<a class="epill" href="${esc(esLink(e))}" target="_blank" rel="noopener" title="Open ${esc(id)} in Elasticsearch${q?'\n'+esc(q):''}">${esc(id)}${IC.ext}</a>`
+      return (e&&e.es_request) ? `<a class="epill" href="${esc(esLink(e))}" target="_blank" rel="noopener" title="Open ${esc(id)} in Kibana Discover${q?'\n'+esc(q):''}">${esc(id)}${IC.ext}</a>`
                                : `<span class="epill nolink" title="${esc(e?e.tool:'evidence')}">${esc(id)}</span>`; }).join('');
     const role = f.role==='negative' ? '<span class="tag" title="argues against the hypothesis">counter-evidence</span>' : '';
     return `<div class="finding ${sev}"><div class="frow"><span class="sev ${sev}">${sev}</span><span class="tech"><span class="id">${esc(f.mitre||'')}</span>${f.technique?'· '+esc(f.technique):''}</span>${role}</div>
@@ -897,7 +948,7 @@ function renderHunt(b, hyp){
     return `<tr id="ev-${esc(e.evidence_id)}"><td class="mono" style="color:var(--es);font-weight:500">${esc(e.evidence_id)}</td><td class="mono">${esc(e.tool)}</td><td>${body}</td>
       <td class="mono" style="color:var(--mute)">${esc(idx)}</td><td class="r"><span class="hits ${h>0?'pos':'zero'}">${fmtN(h)}</span></td><td class="r" style="padding-right:12px">${esBtn(e)}</td></tr>`; }).join('')
     : '<tr><td colspan="6"><div class="empty">No evidence recorded.</div></td></tr>';
-  $('#report-pre').textContent=hunt.report;
+  $('#report-pre').innerHTML=mdToHtml(hunt.report);
   setTab('evidence');
   requestAnimationFrame(()=>vc.scrollIntoView({behavior:'smooth',block:'start'}));
 }
@@ -953,8 +1004,8 @@ function renderScan(b, when){
   const nq=ev.filter(e=>e.is_query_tool).length;
 
   $('#k-rules').textContent=probed;
-  $('#k-det').innerHTML=`${positives.length}<small id="k-det-of">/ ${probed}</small>`; $('#k-det-bar').style.width=(probed?positives.length/probed*100:0)+'%';
-  $('#k-tac').innerHTML=`${tactics.filter(t=>t!=='Other').length}<small>/ ${TACTIC_ORDER.length}</small>`;
+  $('#k-det').textContent=positives.length; $('#k-det-bar').style.width='100%';
+  $('#k-tac').textContent=tactics.filter(t=>t!=='Other').length;
   $('#k-tac-dots').innerHTML=TACTIC_ORDER.map(t=>`<i class="${groups[t]?'on':''}" title="${esc(t)}"></i>`).join('');
   $('#k-when').textContent=timeAgo(ts)||'just now'; $('#k-when-sub').textContent=fmtTime(ts)+(meta.hunt_id?' · '+meta.hunt_id:'');
   $('#scan-sub').innerHTML=`<span class="k">last run</span><b>${esc(timeAgo(ts)||'just now')}</b>`;
@@ -996,6 +1047,7 @@ $('#run-scan').onclick=runScan;
 $('#hyp').addEventListener('keydown',e=>{ if(e.key==='Enter') runHunt(); });
 document.addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){ if(!$('#view-scan').hidden) runScan(); else if(!$('#view-hunt').hidden) runHunt(); } });
 chips(); renderScanEmpty(); loadOverview(); setInterval(loadOverview,20000);
+loadHealth(); setInterval(loadHealth,15000);
 showView((location.hash||'#hunt').slice(1));
 </script>
 </body>

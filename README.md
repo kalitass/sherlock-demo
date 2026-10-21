@@ -9,9 +9,9 @@ return an evidenced verdict — where **every claim is tied to the exact query t
 produced it**, and any claim that is not is rejected by a verifier before it can
 reach the report.
 
-It ships with a self-contained lab: an ELK stack in Docker, a generator that
-plants a realistic cross-source intrusion in three log types, agentic ingestion
-with automatic schema detection, and a live dashboard to watch a hunt happen.
+It ships with a self-contained lab: an ELK stack in Docker, agentic ingestion of
+14 public ATT&CK-labelled datasets with automatic schema detection, and a live
+dashboard to watch a hunt happen.
 
 ---
 
@@ -22,7 +22,7 @@ with automatic schema detection, and a live dashboard to watch a hunt happen.
 | Ingest via **pull, push, stream** | `ingestion/pull.py`, dashboard `POST /api/ingest/push`, `ingestion/stream.py` |
 | **Agentic ingestion** — point at a source, agents do the rest | `ingestion/auto_schema.py` |
 | **Auto schema**: inspect → match template → else create, validate, register | `ingestion/auto_schema.py`, `ingestion/schema_registry.py` |
-| **≥3 log types** (Windows Security, Sysmon, web access) | `datasets/generate.py` |
+| **≥3 log types** (14 public ATT&CK datasets: Windows Security, Sysmon, PowerShell…) | `datasets/mordor_import.py` |
 | **MCP server** exposing search/aggregation/etc. | `mcp_server/server.py`, `mcp_server/tools.py` |
 | **Agentic hunt**: plan → query → test → evidenced report | `hunt_engine/` |
 | **Completeness/accuracy + anti-hallucination** | `hunt_engine/evidence_ledger.py`, `hunt_engine/verifier.py` |
@@ -38,53 +38,45 @@ with automatic schema detection, and a live dashboard to watch a hunt happen.
 - *(Optional)* an LLM API key for the LLM engine. **Without a key, Sherlock runs
   its deterministic engine and everything still works end to end.**
 
-## Quick start
+## Quick start — 3 steps
 
 ```bash
-make up            # start Elasticsearch + Kibana (builds a patched ES image)
-make seed          # generate 3 log types and ingest them via auto-schema
-make dashboard     # http://localhost:8080
+make demo              # 1. START + DATA: ES + Kibana + deps, then download & ingest the datasets
+cp .env.example .env   # 2. KEY (optional): add an LLM key — see below; the Scan engine needs none
+make dashboard         # 3. RUN: web UI → http://localhost:8080
 ```
 
-Or one command:
+Open **http://localhost:8080** → type a hypothesis → **Run hunt**; or open **Detection
+scan** (deterministic, no key needed). **Kibana** for raw pivoting: **http://localhost:5601**.
+
+**2 · LLM key.** One line picks the model. Edit `.env`:
 
 ```bash
-make demo          # up + install + seed + dashboard
+SHERLOCK_LLM_PROVIDER=deepseek     # or anthropic, openai, groq, gemini, openrouter, ollama, …
+DEEPSEEK_API_KEY=sk-...            # the matching *_API_KEY for your chosen provider
 ```
 
-Then open **http://localhost:8080**, type a hypothesis (or click an example),
-and press **Run hunt**. Kibana is at **http://localhost:5601** for raw pivoting.
+`.env` is gitignored. **No key? The deterministic Scan still works end-to-end — only the
+LLM Hunt is disabled.** List providers and which are ready: `make providers`.
+
+**1 · Data.** `make mordor` (included in `make demo`) pulls the public, MIT-licensed
+[OTRF Security-Datasets](https://github.com/OTRF/Security-Datasets) — real
+Windows/Sysmon/PowerShell telemetry, each capture labelled with the ATT&CK technique it
+ran (~36,700 events across 14 datasets). Auto-downloaded and cached under
+`datasets/mordor_cache/`; per-dataset provenance in `docs/DATA_SOURCES.md`.
 
 ### CLI
 
 ```bash
 uv run python -m cli status                                  # cluster + indices
-uv run python -m cli hunt "web shell was used for initial access"
-uv run python -m cli experiment "brute force led to C2" --no-llm
+uv run python -m cli hunt "Was a backdoor local account created on this host?"
 uv run python -m cli schemas                                 # registered parsers
 ```
 
-### Using the LLM engine — bring-your-own-model
+### Supported LLM providers
 
-A pluggable provider compatibility layer (`common/providers.py`) means **one config
-line picks the model**; Sherlock already knows each provider's endpoint and key env
-var. By default it routes through **LiteLLM** (100+ providers, with retries,
-timeouts and parameter-dropping) for robustness; the hand-rolled native adapters
-are used automatically if LiteLLM is absent, or forced with
-`SHERLOCK_LLM_ENGINE=native`. Either way the agent loop and evidence ledger are
-Sherlock's own. Copy `.env.example` to `.env` and set a provider + its key:
-
-```bash
-SHERLOCK_LLM_PROVIDER=anthropic        # or openai, groq, deepseek, gemini, ollama, …
-ANTHROPIC_API_KEY=sk-ant-...           # the matching key env var for your provider
-# SHERLOCK_LLM_MODEL=                   # leave blank to use the provider's default
-```
-
-See every supported provider and which are ready:
-
-```bash
-uv run python -m cli providers         # or: make providers
-```
+Each is one `SHERLOCK_LLM_PROVIDER` value; set its key env var in `.env`. Routing uses
+**LiteLLM** when installed, else built-in native adapters.
 
 | Provider | Key env var | Notes |
 |---|---|---|
@@ -114,10 +106,12 @@ and `SHERLOCK_LLM_RETRIES`.
 
 *A detection is only as portable as its schema.* The same incident ships exported in
 the **seven schemas the course teaches**, and Sherlock normalises them all onto one
-canonical field set so a single query fires across every one:
+canonical field set so a single query fires across every one. The seven formats are
+kept as illustrative fixtures and normalised onto `n_*`; the agreement is proven by a
+unit test (no synthetic dataset is ingested):
 
 ```bash
-make siem                 # or: uv run python -m cli siem
+uv run pytest tests/test_core.py -k normalise_all_seven_agree
 ```
 
 | File | Side | Schema |
@@ -135,7 +129,7 @@ Each event is normalised onto canonical `n_*` fields (`n_user`, `n_src_ip`,
 fires identically across all seven schemas**:
 
 ```bash
-# 18 brute-force events found in every schema's index, via the SAME canonical query
+# the SAME canonical query matches the identical event rendered in all seven schemas
 n_event_id=4625  AND  n_user=administrator  AND  n_src_ip=203.0.113.66  AND  n_action=failure
 ```
 

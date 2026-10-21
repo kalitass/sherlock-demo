@@ -1,79 +1,56 @@
-# Demo runbook — 5-minute demo + 5-minute pitch
+# Demo runbook — 5-minute live demo + presentation
 
-## Before class (once)
+*Threat hunting you can put in front of an auditor: plain-English hypothesis in → evidenced verdict out.*
+
+## Before the session (once)
 
 ```bash
-make up            # wait until http://localhost:9200 is green (~1 min)
-make seed          # ~5 s; loads 3 log types
+make demo          # start ELK + download & ingest the 14 OTRF datasets (~36,700 real events)
 make dashboard     # leave running on http://localhost:8080
 ```
 
-Open two browser tabs: **http://localhost:8080** (Sherlock) and
-**http://localhost:5601** (Kibana). Set `engine: deterministic` in the dashboard
-dropdown so the demo is instant and can't fail live. (If you have an API key set,
-`engine: LLM` shows the agent reasoning in natural language — nice, but slower and
-needs network. Deterministic is the safe default for a graded demo.)
+Open two tabs: **http://localhost:8080** (Sherlock) and **http://localhost:5601** (Kibana).
 
-## The 5-minute demo (click-by-click)
+- **No LLM key?** The **Detection scan** (deterministic) runs with no key and is instant —
+  the safe default for a graded live demo.
+- **With a key** (`.env`: `SHERLOCK_LLM_PROVIDER` + the matching `*_API_KEY`): **Run hunt**
+  streams the agent's reasoning live — nicer, but slower and needs network.
 
-1. **(0:00) Framing — 20 s.** “Today an analyst hand-loads logs and writes a
-   one-off query per hunt. Sherlock takes a hypothesis in plain English and returns
-   an evidenced verdict. Watch.”
-2. **(0:20) Show ingestion — 40 s.** Point at the four tiles: **6,468 events, 3
-   sources, 3 auto-schemas**. “Three different log formats — Windows, Sysmon, and
-   raw text web logs — and we wrote **zero** parsers. An agent inspected each
-   source, built a parser, validated it, and registered it. The web log is plain
-   text; it auto-extracted 12 fields.” (Optional: show the *Ingested sources* table.)
-3. **(1:00) Run a hunt — 90 s.** Click the example chip *“An external actor
-   brute-forced the administrator account and gained access”*, press **Run hunt**.
-   Narrate the **live trace**: “It connects to the SIEM through MCP, runs a coverage
-   sweep, then probes technique by technique — brute force, web shell, PowerShell,
-   persistence, log clearing, C2 — and each finding streams in with its severity and
-   MITRE ID.” End on **VERDICT: CONFIRMED, integrity 100%**.
-4. **(2:30) The proof — 60 s.** Scroll to **Findings** and **Evidence ledger**.
-   “Here’s the whole kill chain. Every finding cites evidence ids — E2, E3 — and
-   over here is the ledger: **every query we ran**, with its hit count. Nothing on
-   the left exists without a receipt on the right.”
-5. **(3:30) The guardrail — 40 s.** “If the agent ever claimed something it couldn’t
-   back with a query, a verifier throws it out before it reaches the report — you’d
-   see it in a struck-through *rejected* section. Hallucination isn’t discouraged;
-   it’s mechanically blocked.” (Show `uv run python -m tests.test_core` output if
-   asked — it proves the verifier rejects a hallucinated citation.)
-6. **(4:10) Repeatability — 30 s.** “Run the same hunt twice and the verdict,
-   findings, and evidence are identical — Jaccard 1.0. That’s what makes it
-   auditable.” (Optionally run `make experiment` beforehand and show the table.)
-7. **(4:40) Kibana — 20 s.** Flip to Kibana: “And because it’s the standard ELK
-   stack, an analyst can pivot on the same indices by hand any time.”
+## The 5-minute live demo (in order)
 
-**Backup if anything hangs:** switch the engine dropdown to `deterministic`, or run
-`uv run python -m cli hunt "web shell was used for initial access"` in a terminal —
-the CLI prints the same report.
+1. **Framing — 20 s.** Today an analyst hand-writes a query per hunt; point an LLM at the
+   logs instead and it confidently makes things up. Sherlock takes a hypothesis in plain
+   English and returns a verdict where **every claim is tied to a query that proves it**.
+2. **Data — 30 s.** Show the Overview tiles: **~36,700 real events across 14 public,
+   ATT&CK-labelled datasets** (Windows / Sysmon / PowerShell, the OTRF Security-Datasets).
+   Every source was **auto-schema'd on ingest — zero hand-written parsers**.
+3. **Run a hunt — 90 s.** Type a hypothesis (e.g. *"Was a backdoor local account created on
+   this host?"*) and **Run hunt**. Narrate the live trace: connects to ES through **MCP**,
+   plans a coverage sweep, then queries technique by technique; each finding streams in with
+   its severity and MITRE ID. End on the **verdict + evidence integrity %**.
+4. **Proof — 60 s.** Scroll to **Findings** and the **Evidence ledger**: every finding cites
+   evidence ids, and the ledger lists **every query that ran** with its hit count. *Nothing on
+   the left exists without a receipt on the right.* (Each evidence link opens Kibana Discover.)
+5. **Guardrail — 40 s.** A **verifier** drops any claim not backed by a successful query —
+   shown in the struck-through *rejected* section. On our benchmark it caught **6%** of the
+   model's own claims. Hallucination isn't discouraged; it's **mechanically blocked**.
+6. **Reproducibility — 30 s.** Run the same hypothesis twice → the **same verdict every time
+   (4/4)**, even though the agent's query path differs each run — because the verdict is
+   derived from verified evidence, not the model's wording.
+7. **Kibana — 20 s.** It's the standard ELK stack, so an analyst can pivot on the same
+   indices by hand any time.
 
-## The 5-minute Shark-Tank pitch
+**Backup if anything hangs:** switch the dashboard engine to **Detection scan** (deterministic,
+no key), or run `make hunt H="Was a backdoor local account created on this host?"` in a
+terminal — same evidenced report.
 
-Follow `pitch/GroupX_Pitch.pdf`. Beats:
+## Headline numbers (from §6 of the report; DeepSeek, temperature 0)
 
-- **Problem (1 min):** threats at machine speed; hunts are slow and don’t scale;
-  and when teams try AI, it hallucinates, so nobody trusts it for a real verdict.
-  *The trust gap is the whole problem.*
-- **Product (1 min):** hypothesis in, verdict out — and it proves every claim.
-- **Why it wins (2 min):** (1) no evidence, no claim — a verifier blocks
-  hallucination; (2) zero-config ingestion — agents build the parsers; (3)
-  repeatable and auditable — deterministic mode for regulated SOCs.
-- **Business + ask (1 min):** MSSPs and enterprise SOCs; per-seat SaaS + volume
-  tier + on-prem for air-gapped; asking for a design-partner MSSP and a seed round.
+- **100% accuracy / 0% false-positive rate** on 20 labelled hypotheses (14 ATT&CK techniques, 7 tactics)
+- **6%** of LLM claims caught as unsupported; **100%** claim integrity by construction
+- **Same verdict on repeated runs (4/4)**; the deterministic scanner detects **15/15** probed techniques
 
-**Likely investor questions & answers**
+## Presentation
 
-- *“How is this different from an LLM with a SIEM plugin?”* The evidence ledger +
-  verifier. We don’t just let a model query logs; we make every claim provable and
-  reject the ones that aren’t.
-- *“What if the LLM is wrong?”* It can be wrong in its narrative, never in its
-  published findings — an unsupported claim can’t pass the verifier. And a
-  deterministic mode needs no model at all.
-- *“Moat?”* The schema registry (parsers improve with every source seen), the
-  evidence/audit trail as a system of record, and detection-as-code on top of the
-  deterministic engine.
-- *“Why now?”* MCP standardised how agents use tools; ELK is already in every SOC.
-  We’re the trust layer between them.
-```
+The pitch deck is on **Canva** (14 pages, structured as Part 1–5). The slide→speaker split and
+the report-section ownership live in the collaboration repo (`sherlock/docs/DIVISION.md`).

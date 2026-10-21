@@ -107,20 +107,32 @@ def _supports(f: dict[str, Any]) -> bool:
 def _summary(verdict, verified, confirming, refuting, verification, coverage,
              any_query_failed, covered) -> str:
     rej = verification["n_rejected"]
-    src = ", ".join(coverage.get("sources_searched") or []) or "no sources"
+    n_src = len(coverage.get("sources_searched") or [])
+    src = f"{n_src} source{'' if n_src == 1 else 's'}" if n_src else "no sources"
     tail = f" {rej} candidate claim(s) were rejected by the verifier for lacking evidence." if rej else ""
     if verdict == "confirmed":
-        techs = sorted({f.get("technique") or f.get("mitre") or "?" for f in confirming})
-        return (f"CONFIRMED on the evidence: {len(confirming)} verified finding(s) argue the "
-                f"hypothesis is true, spanning {', '.join(techs) or '?'}. Sources searched: {src}.{tail}")
+        techs = _tech_phrase(confirming)
+        return (f"Confirmed. {len(confirming)} verified finding(s) back the hypothesis"
+                f"{f', pointing to {techs}' if techs else ''}. "
+                f"Evidence was drawn from {src} searched across the corpus.{tail}")
     if verdict == "refuted":
-        return (f"REFUTED: {len(refuting)} verified finding(s) argue against the hypothesis "
-                f"(e.g. queries that returned zero matches for the claimed activity) across "
-                f"{src}.{tail}")
+        return (f"Refuted. {len(refuting)} verified finding(s) argue against the hypothesis — "
+                f"queries that returned zero matches for the claimed activity across {src}.{tail}")
     if not covered:
-        return ("INCONCLUSIVE: no probe or query in this hunt covers the stated hypothesis, so it "
-                f"can be neither confirmed nor refuted.{tail}")
+        return ("Inconclusive. No probe or query in this hunt covers the stated hypothesis, "
+                f"so it can be neither confirmed nor refuted.{tail}")
     reason = ("one or more queries failed to execute" if any_query_failed
-              else "no verified evidence for or against the hypothesis")
-    return (f"INCONCLUSIVE: {reason}. A confirmed verdict needs verified presence evidence; a refuted "
-            f"verdict needs a verified absence query.{tail}")
+              else "there was no verified evidence for or against the hypothesis")
+    return (f"Inconclusive — {reason}. A confirmed verdict needs verified presence evidence; "
+            f"a refuted verdict needs a verified absence query.{tail}")
+
+
+def _tech_phrase(confirming: list[dict[str, Any]]) -> str:
+    """Human-readable technique phrase: name one or two, else count them."""
+    techs = sorted({(f.get("technique") or f.get("mitre") or "").strip()
+                    for f in confirming} - {""})
+    if not techs:
+        return ""
+    if len(techs) <= 2:
+        return "; ".join(techs)
+    return f"{len(techs)} ATT&CK techniques"

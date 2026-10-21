@@ -7,8 +7,10 @@ ingestion modes are exercisable from one process.
 from __future__ import annotations
 
 import json
+import os
 import queue
 import threading
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -47,9 +49,65 @@ async def _security_headers(request: Request, call_next):
     return resp
 
 
+_KIBANA_URL = os.environ.get("SHERLOCK_KIBANA_URL", "http://localhost:5601")
+_DV_PATTERN = f"{LOG_INDEX_PREFIX}*"  # sherlock-logs-*
+_kibana_cache: dict[str, Any] = {}
+
+
+def _kibana_data_view() -> dict[str, Any] | None:
+    """Discover (and, on a fresh stack, create) the `sherlock-logs-*` Kibana data
+    view, so an evidence row can deep-link into Discover instead of the raw ES
+    `_search` JSON. Returns {'url', 'data_view_id'} or None when Kibana is not yet
+    reachable (the UI then falls back to the ES link). Only a success is cached, so
+    this keeps retrying while Kibana is still booting."""
+    if "result" in _kibana_cache:
+        return _kibana_cache["result"]
+    result = None
+    try:
+        req = urllib.request.Request(f"{_KIBANA_URL}/api/data_views", headers={"kbn-xsrf": "true"})
+        with urllib.request.urlopen(req, timeout=2) as r:
+            views = json.loads(r.read()).get("data_view", [])
+        dv = next((d for d in views if d.get("title") == _DV_PATTERN), None)
+        if dv is None:
+            body = json.dumps({"data_view": {"title": _DV_PATTERN, "name": "Sherlock logs",
+                                             "timeFieldName": "@timestamp"}}).encode()
+            req = urllib.request.Request(
+                f"{_KIBANA_URL}/api/data_views/data_view", data=body, method="POST",
+                headers={"kbn-xsrf": "true", "Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=5) as r:
+                dv = json.loads(r.read()).get("data_view", {})
+        if dv and dv.get("id"):
+            result = {"url": _KIBANA_URL, "data_view_id": dv["id"]}
+    except Exception:
+        result = None
+    if result is not None:
+        _kibana_cache["result"] = result
+    return result
+
+
 @app.get("/", response_class=HTMLResponse)
 def index() -> str:
     return (STATIC / "index.html").read_text()
+
+
+@app.get("/api/health")
+def health() -> JSONResponse:
+    """Environment check for the top bar: is Elasticsearch reachable, and is a usable
+    LLM provider key configured? Each drives a green/red light in the UI."""
+    es_ok = False
+    try:
+        es_ok = bool(get_client().ping())
+    except Exception:
+        es_ok = False
+    llm_ok, provider, model = False, "?", ""
+    try:
+        from common.providers import resolve_provider
+        r = resolve_provider()
+        llm_ok, provider, model = bool(r.available), r.name, r.model
+    except Exception:
+        pass
+    return JSONResponse({"es_ok": es_ok, "llm_ok": llm_ok,
+                         "llm_provider": provider, "llm_model": model})
 
 
 @app.get("/api/overview")
@@ -71,7 +129,8 @@ def overview() -> JSONResponse:
     n_hunts = es.count(index=HUNT_INDEX)["count"] if es.indices.exists(index=HUNT_INDEX) else 0
     n_schemas = es.count(index=SCHEMA_INDEX)["count"] if es.indices.exists(index=SCHEMA_INDEX) else 0
     return JSONResponse({"total_events": total_events, "log_types": log_types, "schemas": schemas,
-                         "n_hunts": n_hunts, "n_schemas": n_schemas})
+                         "n_hunts": n_hunts, "n_schemas": n_schemas,
+                         "kibana": _kibana_data_view()})
 
 
 @app.get("/api/hunts")

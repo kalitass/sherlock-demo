@@ -38,8 +38,8 @@ def build_report(meta: dict[str, Any], result: dict[str, Any],
              f"({verification['n_verified']}/{verification['n_total']} candidate claims backed by data)")
     if candidate and candidate != verdict:
         L.append(">")
-        L.append(f"> _The engine proposed **{candidate}**; the verified verdict derived from evidence "
-                 f"is **{verdict}**. Only the verified verdict is authoritative._")
+        L.append(f"> *The engine proposed **{candidate}**; the verified verdict derived from evidence "
+                 f"is **{verdict}**. Only the verified verdict is authoritative.*")
     L.append("")
     L.append("| | |")
     L.append("|---|---|")
@@ -58,21 +58,22 @@ def build_report(meta: dict[str, Any], result: dict[str, Any],
     L.append("")
 
     cov = result.get("coverage", {})
+    avail = cov.get("sources_available") or []
+    searched = cov.get("sources_searched") or []
+    missing = cov.get("sources_missing") or []
+    det = cov.get("techniques_detected") or []
     L.append("## Coverage")
     L.append("")
-    L.append(f"- **Sources available:** {', '.join(cov.get('sources_available') or []) or 'n/a'}")
-    L.append(f"- **Sources actually searched:** {', '.join(cov.get('sources_searched') or []) or 'none'}")
-    if cov.get("sources_missing"):
-        L.append(f"- **Sources NOT searched:** {', '.join(cov['sources_missing'])}")
-    L.append(f"- **Coverage complete:** {cov.get('complete', False)}  ·  "
-             f"queries ok: {cov.get('queries_ok', '?')}, failed: {cov.get('queries_failed', 0)}")
+    L.append(f"- **Sources searched:** {len(searched)} of {len(avail)} available"
+             + ("  ·  complete" if cov.get("complete") else ""))
+    if missing:
+        L.append(f"- **Not searched:** {', '.join(missing)}")
+    L.append(f"- **Queries:** {cov.get('queries_ok', '?')} ok, {cov.get('queries_failed', 0)} failed")
     tw = cov.get("time_window") or {}
     if tw:
-        L.append(f"- **Time window:** {tw.get('earliest','?')} → {tw.get('latest','?')}")
-    if cov.get("techniques_probed"):
-        L.append(f"- **Techniques probed:** {', '.join(cov['techniques_probed'])}")
-    if cov.get("techniques_detected"):
-        L.append(f"- **Techniques detected:** {', '.join(cov['techniques_detected'])}")
+        L.append(f"- **Time window:** {str(tw.get('earliest','?'))[:19]} → {str(tw.get('latest','?'))[:19]}")
+    if det:
+        L.append(f"- **Techniques detected:** {len(det)} — {', '.join(det)}")
     L.append("")
 
     L.append("## Findings")
@@ -106,8 +107,8 @@ def build_report(meta: dict[str, Any], result: dict[str, Any],
     if rejected:
         L.append("## Claims rejected by the verifier (not counted in the verdict)")
         L.append("")
-        L.append("_These candidate claims failed the evidence check and were quarantined. "
-                 "Listing them is deliberate: it shows the guardrail working._")
+        L.append("*These candidate claims failed the evidence check and were quarantined. "
+                 "Listing them is deliberate: it shows the guardrail working.*")
         L.append("")
         for f in rejected:
             L.append(f"- ~~{_p(f.get('claim','(no claim)'))}~~ — **rejected:** {_p(f.get('reject_reason','unsupported'))}")
@@ -121,7 +122,8 @@ def build_report(meta: dict[str, Any], result: dict[str, Any],
             L.append(f"- {_p(a)}")
         L.append("")
 
-    L.append("## Appendix A — Evidence ledger (every query that ran)")
+    L.append(f"<details><summary><b>Appendix A — Evidence ledger</b> "
+             f"({len(ledger.entries)} queries that ran)</summary>")
     L.append("")
     L.append("| ID | Tool | OK | Matched | Summary | Digest |")
     L.append("|----|------|----|---------|---------|--------|")
@@ -133,7 +135,9 @@ def build_report(meta: dict[str, Any], result: dict[str, Any],
     note = ("Full reproducible requests are stored in the `sherlock-evidence` index"
             if persist == "enabled" else
             "Evidence persistence was degraded this run; requests are shown inline above but may not be in ES")
-    L.append(f"_{note}; each is also shown inline under its finding._")
+    L.append(f"*{note}; each is also shown inline under its finding.*")
+    L.append("")
+    L.append("</details>")
     L.append("")
     return "\n".join(L)
 
