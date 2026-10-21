@@ -2,19 +2,22 @@
 
 # Sherlock — Agentic Threat Hunting on the ELK Stack
 
-**Plain-English hypothesis in → evidenced verdict out.** Every claim in the verdict is
-tied to the exact query that produced it. *No evidence, no claim.*
+Sherlock is an **AI threat-hunting tool** that runs on your ELK (Elasticsearch) logs. You
+ask a security question in plain English — e.g. *"was a backdoor account created on this
+host?"* — and it searches the SIEM for you, reaches a verdict, and **backs every
+conclusion with the exact query it actually ran** as evidence. It's our SE6014 course
+project (Question 1).
 
-Sherlock is an AI threat-hunting assistant for SE6014 (Question 1).
+Its guiding rule is **no evidence, no claim**: any conclusion not backed by a query is
+dropped before it reaches the report.
 
-## What it is & the problem it solves
+## Why it exists
 
 Security teams drown in logs, and hunting an intrusion means hand-writing queries one
-hypothesis at a time. Point an LLM at the logs instead and it hallucinates — a fabricated
-"intrusion" wastes a day, a missed one is a breach. Sherlock makes AI hunting
-**trustworthy**: you ask in plain English, and it returns a verdict where every statement
-is backed by a reproducible Elasticsearch query. A verifier recomputes the verdict from
-only the evidence that checks out, so any conclusion can be audited back to the data.
+hypothesis at a time; point an LLM at the logs instead and it hallucinates — a fabricated
+"intrusion" wastes a day, a missed one is a breach. Sherlock makes every conclusion
+auditable back to the data: a verifier recomputes the verdict from only the evidence that
+checks out, so the AI's verdict becomes trustworthy.
 
 ## Quick start
 
