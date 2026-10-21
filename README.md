@@ -5,8 +5,7 @@
 Sherlock is an **AI threat-hunting tool** that runs on your ELK (Elasticsearch) logs. You
 ask a security question in plain English — e.g. *"was a backdoor account created on this
 host?"* — and it searches the SIEM for you, reaches a verdict, and **backs every
-conclusion with the exact query it actually ran** as evidence. It's our SE6014 course
-project (Question 1).
+conclusion with the exact query it actually ran** as evidence.
 
 Its guiding rule is **no evidence, no claim**: any conclusion not backed by a query is
 dropped before it reaches the report.
