@@ -1,6 +1,6 @@
 # Sherlock — ELK backbone for agentic threat hunting.
 # Security is disabled on purpose: this is a self-contained local lab, not a
-# production deployment. Documented as a dev-only choice in docs/sherlock-spec.md.
+# production deployment. Documented as a dev-only choice.
 name: sherlock
 
 services:

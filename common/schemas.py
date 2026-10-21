@@ -31,8 +31,7 @@ CANONICAL = [
 # Per-schema source field (or dotted path) for each canonical field. Values are
 # taken directly from the Week 2 mapping tables. None = the schema has no native
 # field for it (e.g. CEF/LEEF cannot express process lineage — slide 24).
-# Field maps corrected against the real schemas after an external review (see
-# docs/sherlock-spec changelog). For Authentication events specifically: n_time is
+# Field maps corrected against the real schemas after an external review. For Authentication events specifically: n_time is
 # taken from the parsed `@timestamp` (the native ts field is consumed at parse
 # time); mappings flagged as the wrong concept for Authentication are set to None.
 SCHEMA_FIELDS: dict[str, dict[str, str | None]] = {

@@ -60,7 +60,7 @@ each new source. The **hunt engine** (LLM agent or deterministic scanner) can to
 **only** through a bounded **MCP tool surface**, and every call is recorded in an
 **evidence ledger**. A **verifier** keeps only findings backed by a successful query; a
 **reducer** derives the verdict from that verified evidence. The **dashboard** streams it
-all live. Full detail: [`docs/sherlock-spec.md`](docs/sherlock-spec.md).
+all live.
 
 ## Mapped to the brief
 
@@ -85,5 +85,4 @@ all live. Full detail: [`docs/sherlock-spec.md`](docs/sherlock-spec.md).
   `uv run pytest tests/test_core.py -k normalise_all_seven_agree`.
 - **Datasets & provenance** — the 14-capture manifest with each ATT&CK id lives in
   `datasets/mordor_import.py`.
-- **Architecture spec** — [`docs/sherlock-spec.md`](docs/sherlock-spec.md).
 - **CLI** — `uv run python -m cli hunt "…"` · `… status` · `… schemas`.

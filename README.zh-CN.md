@@ -56,7 +56,7 @@ make dashboard         # 打开 http://localhost:8080
 日志经 **拉取 / 推送 / 流式** 进入,一个**自动 schema 智能体**为每个新源现建解析器。
 **狩猎引擎**(LLM 智能体或确定性扫描器)**只能**通过受限的 **MCP 工具层**碰数据,每次
 调用都记进**证据账本**。**verifier** 只留下有成功查询支撑的结论,**reducer** 从这些已核验
-的证据推出判决。**仪表盘**把全程实时推流。完整细节:[`docs/sherlock-spec.md`](docs/sherlock-spec.md)。
+的证据推出判决。**仪表盘**把全程实时推流。
 
 ## 对照课程要求
 
@@ -78,5 +78,4 @@ make dashboard         # 打开 http://localhost:8080
 - **七种 SIEM 互通** —— 统一到一套 `n_*` 规范字段,一条查询同时命中 CEF / LEEF / CIM /
   ECS / OCSF / ASIM / UDM,由 `uv run pytest tests/test_core.py -k normalise_all_seven_agree` 证明。
 - **数据集与来源** —— 14 份采集的清单(含各自 ATT&CK 编号)在 `datasets/mordor_import.py`。
-- **架构 spec** —— [`docs/sherlock-spec.md`](docs/sherlock-spec.md)。
 - **命令行** —— `uv run python -m cli hunt "…"` · `… status` · `… schemas`。
