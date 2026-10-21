@@ -1,3 +1,5 @@
+**English** · [中文](README.zh-CN.md)
+
 # Sherlock — Agentic Threat Hunting on the ELK Stack
 
 **Plain-English hypothesis in → evidence-linked verdict out.**
@@ -147,15 +149,15 @@ changed fields) instead of quietly matching nothing. Contracts live in
 ```bash
 # PULL — drop a file into the watched directory
 uv run python -m ingestion.pull            # in one terminal
-cp datasets/generated/sysmon.json drop/    # in another
+cp path/to/your-logs.json drop/            # in another (any JSON/NDJSON log file)
 
 # PUSH — an endpoint agent posts a batch
 curl -X POST "http://localhost:8080/api/ingest/push?log_type=windows" \
-     -H 'Content-Type: application/json' --data-binary @datasets/generated/windows_security.json
+     -H 'Content-Type: application/json' --data-binary @path/to/your-logs.json
 
 # STREAM — a continuous syslog-style feed
-uv run python -m ingestion.stream                                   # listener
-uv run python -m ingestion.stream --send datasets/generated/web_access.log  # producer
+uv run python -m ingestion.stream                          # listener
+uv run python -m ingestion.stream --send path/to/logs.log  # producer
 ```
 
 ### Point Claude Desktop at the same MCP server (optional)
@@ -210,11 +212,11 @@ These are baked into the repo; listed so a grader understands the choices.
 ```
 docker-compose.yml   docker/es/       # ELK, patched for Apple Silicon
 common/              # settings, ES client, LLM client
-datasets/            # deterministic 3-source attack generator
+datasets/            # OTRF Security-Datasets import (mordor_import.py)
 ingestion/           # auto_schema, parsing, ingest core, pull/push/stream
 mcp_server/          # MCP tools + stdio server
 hunt_engine/         # mcp_client, planner/executor (LLM), heuristic, ledger, verifier, reporter
 dashboard/           # FastAPI + single-page SOC console (SSE live trace)
 experiment/          # run-the-same-hunt-twice comparison
-docs/                # architecture spec, division of labour, experiment results
+docs/                # architecture spec, experiment results
 ```
