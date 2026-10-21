@@ -9,6 +9,8 @@ Sherlock 是一个跑在 ELK(Elasticsearch)日志上的 **AI 威胁狩猎工具*
 它的核心准则是 **无证据,不下结论(No evidence, no claim)**:任何没有查询支撑的结论,
 都会在进报告前被拦掉。
 
+![Sherlock 仪表盘:一份带证据的判决,每条发现都引用了产生它的那条查询](docs/img/dashboard.png)
+
 ## 为什么需要它
 
 安全团队被日志淹没,查一次入侵往往要分析师一个假设一个假设地手写查询;可要是直接把
@@ -32,7 +34,7 @@ make dashboard         # 打开 http://localhost:8080
 ## 效果 · 证明了什么
 
 在公开的 OTRF Security-Datasets 上——约 36,700 条真实事件、14 个 ATT&CK 技术横跨 7 个
-战术、DeepSeek、温度 0:
+战术、DeepSeek:
 
 | 指标 | 结果 |
 |---|---|
@@ -49,14 +51,7 @@ make dashboard         # 打开 http://localhost:8080
 
 ## 工作原理
 
-```
-假设 → 狩猎引擎 ──(MCP 查询工具)──→ Elasticsearch
-            │           每次调用都记账 ↓
-            └──────────────→ 证据账本(evidence ledger)
-                                   ↓
-                      verifier → reducer → 报告
-   (丢掉任何"查询没跑成 / 没对上"的结论;判决只从幸存的证据推出,绝不信模型自己的话)
-```
+![一次狩猎的流程:假设 → 狩猎引擎 → MCP 工具 → Elasticsearch;每次调用都记进证据账本;verifier → reducer → 带证据报告](docs/img/how-it-works.svg)
 
 日志经 **拉取 / 推送 / 流式** 进入,一个**自动 schema 智能体**为每个新源现建解析器。
 **狩猎引擎**(LLM 智能体或确定性扫描器)**只能**通过受限的 **MCP 工具层**碰数据,每次

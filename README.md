@@ -10,6 +10,8 @@ conclusion with the exact query it actually ran** as evidence.
 Its guiding rule is **no evidence, no claim**: any conclusion not backed by a query is
 dropped before it reaches the report.
 
+![The Sherlock dashboard: an evidenced verdict where every finding cites the query that produced it](docs/img/dashboard.png)
+
 ## Why it exists
 
 Security teams drown in logs, and hunting an intrusion means hand-writing queries one
@@ -34,7 +36,7 @@ With no API key, everything still runs end to end on the deterministic engine.
 ## What it proves
 
 On the public OTRF Security-Datasets — ~36,700 real events, 14 ATT&CK techniques across
-7 tactics, DeepSeek at temperature 0:
+7 tactics, DeepSeek:
 
 | Metric | Result |
 |---|---|
@@ -51,15 +53,7 @@ Raw runs: [`docs/benchmark_results_deepseek.md`](docs/benchmark_results_deepseek
 
 ## How it works
 
-```
-hypothesis → hunt engine ──(MCP query tools)──→ Elasticsearch
-                 │              every call logged ↓
-                 └───────────────→ evidence ledger
-                                         ↓
-                           verifier → reducer → report
-     (drop any claim whose query didn't run / didn't match; derive the
-      verdict from what survives — never from the model's own word)
-```
+![How a hunt flows: hypothesis → hunt engine → MCP tools → Elasticsearch; every call logged to an evidence ledger; verifier → reducer → evidenced report](docs/img/how-it-works.svg)
 
 Logs enter via **pull / push / stream**, and an **auto-schema agent** builds a parser for
 each new source. The **hunt engine** (LLM agent or deterministic scanner) can touch data
